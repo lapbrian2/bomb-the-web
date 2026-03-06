@@ -900,6 +900,229 @@
     text-transform: uppercase;
   }
 
+  /* ── SECRETS HINT PANEL ── */
+  #secrets-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 200;
+    width: 48px; height: 48px;
+    background: var(--pink);
+    border: 3px solid var(--black);
+    box-shadow: var(--shadow-md);
+    color: var(--white);
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s, background 0.2s;
+    user-select: none;
+  }
+  #secrets-btn:hover {
+    transform: translate(-2px,-2px) rotate(-5deg);
+    box-shadow: 6px 6px 0 var(--black);
+    background: var(--yellow);
+    color: var(--black);
+  }
+  #secrets-panel {
+    position: fixed;
+    bottom: 84px;
+    right: 24px;
+    z-index: 200;
+    width: 280px;
+    background: rgba(10,10,10,0.95);
+    border: 3px solid var(--black);
+    box-shadow: var(--shadow-lg);
+    padding: 20px;
+    display: none;
+    backdrop-filter: blur(8px);
+  }
+  #secrets-panel.open { display: block; }
+  .secrets-title {
+    font-size: 16px;
+    color: var(--yellow);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    -webkit-text-stroke: 1px var(--black);
+  }
+  .secret-hint {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: rgba(245,245,245,0.5);
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .secret-hint:last-child { border-bottom: none; }
+  .secret-icon {
+    width: 24px; height: 24px;
+    border: 2px solid var(--black);
+    box-shadow: 1px 1px 0 var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+  .secret-hint:nth-child(1) .secret-icon { background: var(--pink); }
+  .secret-hint:nth-child(2) .secret-icon { background: var(--cyan); }
+  .secret-hint:nth-child(3) .secret-icon { background: var(--yellow); }
+  .secret-hint:nth-child(4) .secret-icon { background: var(--orange); }
+  .secret-hint:nth-child(5) .secret-icon { background: var(--purple); }
+  .secret-found .secret-icon { background: var(--lime) !important; }
+  .secret-found { color: var(--lime); }
+  .secrets-counter {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: rgba(245,245,245,0.3);
+    margin-top: 12px;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  /* ── SPRAY CANVAS SECTION ── */
+  #spray-zone {
+    background: linear-gradient(180deg, rgba(10,10,10,0.95) 0%, var(--black) 50%, rgba(10,10,10,0.9) 100%);
+    padding: 60px 24px 80px;
+  }
+  .spray-canvas-wrap {
+    max-width: 900px;
+    width: 100%;
+    aspect-ratio: 16/9;
+    border: 4px solid var(--black);
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+    cursor: crosshair;
+    background: #1a1a1a;
+  }
+  .spray-canvas-wrap canvas {
+    width: 100%; height: 100%;
+    display: block;
+  }
+  .spray-toolbar {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+  }
+  .spray-color-btn {
+    width: 36px; height: 36px;
+    border: 3px solid var(--black);
+    box-shadow: var(--shadow-sm);
+    cursor: none;
+    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .spray-color-btn:hover { transform: scale(1.2) rotate(-5deg); }
+  .spray-color-btn.active {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 3px var(--white), var(--shadow-sm);
+  }
+  .spray-size-btn, .spray-clear-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    border: 2px solid var(--black);
+    box-shadow: var(--shadow-sm);
+    background: rgba(255,255,255,0.08);
+    color: var(--white);
+    cursor: none;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .spray-size-btn:hover, .spray-clear-btn:hover {
+    transform: translate(-1px,-1px);
+    background: rgba(255,255,255,0.15);
+  }
+  .spray-clear-btn { background: var(--red); color: var(--white); }
+  .spray-hint {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: rgba(245,245,245,0.3);
+    margin-top: 12px;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  /* ── SPRAY MIST CURSOR ── */
+  .spray-mist {
+    position: fixed;
+    pointer-events: none;
+    z-index: 99;
+    border-radius: 50%;
+    opacity: 0.15;
+    filter: blur(8px);
+    animation: mistFade 0.8s ease-out forwards;
+  }
+  @keyframes mistFade {
+    0%   { opacity: 0.2; transform: translate(-50%,-50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%,-50%) scale(2.5); }
+  }
+
+  /* ── HATCH MARKS OVERLAY (CSS cross-hatching like the ref image) ── */
+  .about-card::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 60px; height: 60px;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 3px,
+      rgba(0,0,0,0.15) 3px,
+      rgba(0,0,0,0.15) 4px
+    );
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .story-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 50px; height: 50px;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 3px,
+      rgba(0,0,0,0.12) 3px,
+      rgba(0,0,0,0.12) 4px
+    );
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .project-card::after {
+    content: '';
+    position: absolute;
+    top: 8px; right: 0;
+    width: 45px; height: 45px;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 3px,
+      rgba(0,0,0,0.1) 3px,
+      rgba(0,0,0,0.1) 4px
+    );
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    #secrets-btn { width: 40px; height: 40px; font-size: 18px; bottom: 16px; right: 16px; }
+    #secrets-panel { right: 16px; bottom: 68px; width: 260px; }
+    .spray-canvas-wrap { aspect-ratio: 4/3; }
+  }
+
   /* ── IDENTITY BADGE (hero) ── */
   .hero-identity {
     font-family: 'Space Mono', monospace;
@@ -1291,6 +1514,27 @@
     </div>
   </section>
 
+  <!-- ── SPRAY ZONE: Interactive Canvas ── -->
+  <section class="section" id="spray-zone">
+    <h2 class="section-title">Tag This Wall</h2>
+    <div class="spray-canvas-wrap">
+      <canvas id="spray-canvas"></canvas>
+    </div>
+    <div class="spray-toolbar">
+      <div class="spray-color-btn active" style="background:#FF1F8E" data-color="#FF1F8E"></div>
+      <div class="spray-color-btn" style="background:#FFD700" data-color="#FFD700"></div>
+      <div class="spray-color-btn" style="background:#29A8D0" data-color="#29A8D0"></div>
+      <div class="spray-color-btn" style="background:#FF8C00" data-color="#FF8C00"></div>
+      <div class="spray-color-btn" style="background:#8B5BB8" data-color="#8B5BB8"></div>
+      <div class="spray-color-btn" style="background:#7DC820" data-color="#7DC820"></div>
+      <div class="spray-color-btn" style="background:#F5F5F5" data-color="#F5F5F5"></div>
+      <div class="spray-color-btn" style="background:#0A0A0A" data-color="#0A0A0A"></div>
+      <button class="spray-size-btn" id="spray-size-btn">Size: M</button>
+      <button class="spray-clear-btn" id="spray-clear-btn">Clear Wall</button>
+    </div>
+    <p class="spray-hint">Click & drag to spray &middot; Pick a color &middot; Leave your mark</p>
+  </section>
+
   <!-- ── SECTION 4: STORIES ── -->
   <section class="section" id="stories">
     <h2 class="section-title">Stories From The Wall</h2>
@@ -1555,6 +1799,18 @@
   <div class="tag tag-2">Wild Style</div>
   <div class="tag tag-3">Graffiti</div>
   <div class="tag tag-4">Urban</div>
+</div>
+
+<!-- Secrets hint button + panel -->
+<div id="secrets-btn" onclick="toggleSecrets()" title="Psst... secrets">?</div>
+<div id="secrets-panel">
+  <div class="secrets-title">Hidden Secrets</div>
+  <div class="secret-hint" id="sh-konami"><div class="secret-icon">K</div> Type the Konami Code on your keyboard</div>
+  <div class="secret-hint" id="sh-buff"><div class="secret-icon">B</div> Type "BUFF" anywhere on the page</div>
+  <div class="secret-hint" id="sh-snitch"><div class="secret-icon">S</div> Triple-click the footer brand text</div>
+  <div class="secret-hint" id="sh-clicks"><div class="secret-icon">C</div> Click... a lot. Milestones await.</div>
+  <div class="secret-hint" id="sh-tab"><div class="secret-icon">T</div> Switch to another tab and come back</div>
+  <div class="secrets-counter" id="secrets-counter">0 / 5 FOUND</div>
 </div>
 
 <!-- Snitch mode banner (hidden by default) -->
@@ -1843,6 +2099,41 @@
     [5.2, 4.8, 0, P.yellow, 0.7], [-5.8, 4.9, 0, P.purple, 0.7],
     [6.8, 4.7, 0, P.red, 0.8], [-0.8, 4.4, 0, P.orange, 0.6],
   ].forEach(([x,y,z,c,l]) => addF(makeDrip(c,l), x,y,z, { bobFreq: 0.3 + Math.random() * 0.2, bobAmp: 0.04 }));
+
+  // Extra spray cans scattered deeper for layered 3D feel
+  if (!isMobile) {
+    [
+      [P.red, -8.5, 2.2, -3, { ry: 0.4, rz: -0.3, bobFreq: 0.35, bobAmp: 0.06 }],
+      [P.yellow, 8.0, -2.5, -2.5, { ry: -0.35, rz: 0.25, bobFreq: 0.42, bobAmp: 0.07 }],
+      [P.cyan, -3.5, -4.5, -2, { ry: 0.15, rz: 0.4, bobFreq: 0.5, bobAmp: 0.05 }],
+      [P.pink, 4.0, 4.0, -3.5, { ry: -0.2, rz: -0.15, bobFreq: 0.38, bobAmp: 0.06 }],
+      [P.white, 0, -5.5, -1.5, { ry: 0.1, rz: 0.3, bobFreq: 0.55, bobAmp: 0.08 }],
+      [P.orange, -7.5, -4.0, -2, { ry: -0.3, rz: 0.1, bobFreq: 0.44, bobAmp: 0.07 }],
+      [P.purple, 7.5, 3.5, -2.8, { ry: 0.25, rz: -0.2, bobFreq: 0.48, bobAmp: 0.05 }],
+    ].forEach(([c,x,y,z,o]) => addF(makeSprayCan(c), x,y,z, o));
+
+    // Extra deep blocks for parallax depth
+    [
+      [1.8, 2.0, 0.7, P.pink, -8, 1, -4, { ry: 0.2, bobFreq: 0.3 }],
+      [2.0, 1.5, 0.6, P.cyan, 8, -1, -5, { ry: -0.15, bobFreq: 0.35 }],
+      [1.5, 2.5, 0.8, P.yellow, 0, 5.5, -3, { ry: 0.05, bobFreq: 0.28 }],
+      [1.2, 1.8, 0.5, P.orange, -6, -5, -3.5, { rz: 0.1, bobFreq: 0.4 }],
+      [1.6, 1.2, 0.6, P.purple, 6, 5, -4, { rz: -0.08, bobFreq: 0.33 }],
+    ].forEach(([w,h,d,c,x,y,z,o]) => addF(makeBlock(w,h,d,c), x,y,z, o));
+
+    // Extra stars deeper in scene
+    [
+      [9, 2, -3, 5, 0.6, 0.24, P.yellow, true],
+      [-9, -2, -4, 4, 0.5, 0.2, P.pink, true],
+      [0, -6, -3, 6, 0.55, 0.22, P.cyan, true],
+    ].forEach(([x,y,z,pts,or,ir,c,t]) => addF(makeStar(pts,or,ir,c,t), x,y,z, { bobFreq: 0.4 + Math.random()*0.2, bobAmp: 0.05, rotZ: (Math.random()-0.5)*0.01 }));
+
+    // Extra arrows and bolts
+    addF(makeArrow(P.yellow, 0.7), 8.5, 2.5, -2, { rz: -0.4, bobFreq: 0.5, bobAmp: 0.06 });
+    addF(makeArrow(P.red, 0.6), -8, -3, -2.5, { rz: 0.7, bobFreq: 0.45, bobAmp: 0.05 });
+    addF(makeBolt(P.cyan, 1.0), -4, -5, -1.5, { rz: -0.15, bobFreq: 0.55, bobAmp: 0.04 });
+    addF(makeBolt(P.orange, 0.8), 5, 5, -2, { rz: 0.25, bobFreq: 0.48, bobAmp: 0.05 });
+  }
 
   // ── PARTICLES (reduced on mobile) ──
   const PCOUNT = isMobile ? 120 : 400;
@@ -2240,6 +2531,139 @@
   });
 
   // ============================================================
+  //  INTERACTIVE SPRAY CANVAS
+  // ============================================================
+  (function initSprayCanvas() {
+    const canvas = document.getElementById('spray-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const wrap = canvas.parentElement;
+
+    function resizeCanvas() {
+      const rect = wrap.getBoundingClientRect();
+      canvas.width = rect.width * 2;
+      canvas.height = rect.height * 2;
+      ctx.scale(2, 2);
+      // Draw brick wall background
+      ctx.fillStyle = '#1a1a1a';
+      ctx.fillRect(0, 0, rect.width, rect.height);
+      const brickW = 60, brickH = 25;
+      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+      ctx.lineWidth = 1;
+      for (let row = 0; row < rect.height / brickH + 1; row++) {
+        const offset = row % 2 === 0 ? 0 : brickW / 2;
+        for (let col = -1; col < rect.width / brickW + 2; col++) {
+          ctx.strokeRect(col * brickW + offset, row * brickH, brickW, brickH);
+        }
+      }
+    }
+    resizeCanvas();
+
+    let spraying = false;
+    let sprayColor = '#FF1F8E';
+    let spraySize = 20; // S=10, M=20, L=35
+    const sizes = [{ label: 'S', val: 10 }, { label: 'M', val: 20 }, { label: 'L', val: 35 }];
+    let sizeIdx = 1;
+
+    function spray(x, y) {
+      const rect = wrap.getBoundingClientRect();
+      const cx = x - rect.left;
+      const cy = y - rect.top;
+      for (let i = 0; i < 12 + spraySize; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const dist = Math.random() * spraySize;
+        const dotX = cx + Math.cos(angle) * dist;
+        const dotY = cy + Math.sin(angle) * dist;
+        const radius = 0.5 + Math.random() * 2;
+        const alpha = 0.3 + Math.random() * 0.5;
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = sprayColor;
+        ctx.beginPath();
+        ctx.arc(dotX, dotY, radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    wrap.addEventListener('mousedown', e => { spraying = true; spray(e.clientX, e.clientY); });
+    wrap.addEventListener('mousemove', e => { if (spraying) spray(e.clientX, e.clientY); });
+    window.addEventListener('mouseup', () => { spraying = false; });
+    wrap.addEventListener('touchstart', e => { e.preventDefault(); spraying = true; spray(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
+    wrap.addEventListener('touchmove', e => { e.preventDefault(); if (spraying) spray(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
+    window.addEventListener('touchend', () => { spraying = false; });
+
+    // Color buttons
+    document.querySelectorAll('.spray-color-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.spray-color-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        sprayColor = btn.dataset.color;
+      });
+    });
+
+    // Size toggle
+    document.getElementById('spray-size-btn').addEventListener('click', function() {
+      sizeIdx = (sizeIdx + 1) % sizes.length;
+      spraySize = sizes[sizeIdx].val;
+      this.textContent = 'Size: ' + sizes[sizeIdx].label;
+    });
+
+    // Clear
+    document.getElementById('spray-clear-btn').addEventListener('click', () => {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      resizeCanvas();
+    });
+  })();
+
+  // ============================================================
+  //  SPRAY MIST CURSOR TRAIL
+  // ============================================================
+  let mistFrame = 0;
+  function spawnMist(x, y) {
+    if (isMobile) return;
+    mistFrame++;
+    if (mistFrame % 3 !== 0) return; // throttle
+    const mist = document.createElement('div');
+    mist.className = 'spray-mist';
+    mist.style.left = (x + (Math.random()-0.5)*20) + 'px';
+    mist.style.top = (y + (Math.random()-0.5)*20) + 'px';
+    const sz = (20 + Math.random() * 30) + 'px';
+    mist.style.width = sz; mist.style.height = sz;
+    mist.style.background = CSS_COLORS[~~(Math.random()*CSS_COLORS.length)];
+    document.body.appendChild(mist);
+    setTimeout(() => mist.remove(), 800);
+  }
+  window.addEventListener('mousemove', e => spawnMist(e.clientX, e.clientY));
+
+  // ============================================================
+  //  SECRETS TRACKING SYSTEM
+  // ============================================================
+  const secretsFound = new Set();
+  function markSecret(id) {
+    if (secretsFound.has(id)) return;
+    secretsFound.add(id);
+    const el = document.getElementById('sh-' + id);
+    if (el) el.classList.add('secret-found');
+    document.getElementById('secrets-counter').textContent = secretsFound.size + ' / 5 FOUND';
+    if (secretsFound.size === 5) {
+      document.getElementById('secrets-counter').textContent = '5 / 5 — YOU ARE NOW CREW';
+      document.getElementById('secrets-counter').style.color = '#FFD700';
+    }
+  }
+  window.toggleSecrets = function() {
+    document.getElementById('secrets-panel').classList.toggle('open');
+  };
+  // Close panel on outside click
+  document.addEventListener('click', e => {
+    const panel = document.getElementById('secrets-panel');
+    const btn = document.getElementById('secrets-btn');
+    if (panel.classList.contains('open') && !panel.contains(e.target) && e.target !== btn) {
+      panel.classList.remove('open');
+    }
+  });
+
+  // ============================================================
   //  EASTER EGGS & GIMMICKS
   // ============================================================
 
@@ -2278,6 +2702,7 @@
       if (konamiIndex === konamiSequence.length) {
         konamiIndex = 0;
         toggleParty();
+        markSecret('konami');
       }
     } else {
       konamiIndex = 0;
@@ -2337,6 +2762,7 @@
     clickCount++;
     const milestone = clickMilestones[clickCount];
     if (milestone) {
+      markSecret('clicks');
       const toast = document.getElementById('click-toast');
       toast.textContent = milestone.msg;
       toast.style.background = milestone.bg;
@@ -2360,6 +2786,7 @@
     if (brandClicks >= 3) {
       brandClicks = 0;
       toggleSnitch();
+      markSecret('snitch');
     }
   });
 
@@ -2386,6 +2813,7 @@
     if (buffBuffer.length > 10) buffBuffer = buffBuffer.slice(-10);
     if (buffBuffer.endsWith('buff')) {
       buffBuffer = '';
+      markSecret('buff');
       // Flash white wipe across the screen
       const wipe = document.createElement('div');
       wipe.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(200,200,200,0.95);display:flex;align-items:center;justify-content:center;pointer-events:none;';
@@ -2431,6 +2859,7 @@
     if (document.hidden) {
       document.title = '👀 Come back... the paint is drying';
     } else {
+      markSecret('tab');
       document.title = titleGags[titleIdx];
     }
   });
