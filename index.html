@@ -836,8 +836,8 @@
   .rule-item:nth-child(8) { border-left-color: var(--cyan); }
   .rule-item:nth-child(9) { border-left-color: var(--pink); }
   .rule-item:nth-child(10) { border-left-color: var(--yellow); }
-  .rule-item:nth-child(odd):hover { transform: translateX(10px) rotate(-0.5deg); }
-  .rule-item:nth-child(even):hover { transform: translateX(-10px) rotate(0.5deg); }
+  .rule-item:nth-child(odd):hover { transform: translateX(10px) rotate(-0.5deg) !important; }
+  .rule-item:nth-child(even):hover { transform: translateX(-10px) rotate(0.5deg) !important; }
   .rule-item:nth-child(1):hover { background: rgba(255,31,142,0.08); box-shadow: 0 0 20px rgba(255,31,142,0.15); }
   .rule-item:nth-child(2):hover { background: rgba(41,168,208,0.08); box-shadow: 0 0 20px rgba(41,168,208,0.15); }
   .rule-item:nth-child(3):hover { background: rgba(255,215,0,0.08); box-shadow: 0 0 20px rgba(255,215,0,0.15); }
@@ -2672,11 +2672,7 @@
         opacity: 1, x: 0, y: 0, rotation: storyRestRotations[i] || 0, scale: 1,
         duration: 1.0 + (i % 3) * 0.1,
         ease: storyEases[i % storyEases.length],
-        scrollTrigger: {
-          trigger: card, start: 'top 90%',
-          toggleActions: 'play none none reverse',
-          onLeaveBack: () => card.classList.remove('arrived'),
-        },
+        scrollTrigger: { trigger: card, start: 'top 90%', toggleActions: 'play none none none' },
         onStart: () => {
           // Spray burst from the card's colored edge
           const rect = card.getBoundingClientRect();
@@ -2692,10 +2688,7 @@
             gsap.to(dot, { x: Math.cos(angle)*dist, y: Math.sin(angle)*dist, opacity: 0, scale: 0.1, duration: 0.5+Math.random()*0.3, ease: 'power2.out', onComplete: () => dot.remove() });
           }
         },
-        onComplete: () => {
-          card.classList.add('arrived');
-          gsap.set(card, { clearProps: 'transform' });
-        },
+        onComplete: () => card.classList.add('arrived'),
       });
     });
 
@@ -3352,16 +3345,9 @@
       opacity: 1, x: 0, rotation: ruleRestRotations[i] || 0, scale: 1,
       duration: 0.9 + (i % 3) * 0.1,
       ease: ruleEases[i] || 'back.out(1.5)',
-      scrollTrigger: {
-        trigger: rule, start: 'top 92%',
-        toggleActions: 'play none none reverse',
-        onLeaveBack: () => rule.classList.remove('arrived'),
-      },
+      scrollTrigger: { trigger: rule, start: 'top 92%', toggleActions: 'play none none none' },
       onStart: () => spawnRuleSprayDots(rule, isOdd),
-      onComplete: () => {
-        rule.classList.add('arrived');
-        gsap.set(rule, { clearProps: 'transform' });
-      },
+      onComplete: () => rule.classList.add('arrived'),
     });
   });
 
