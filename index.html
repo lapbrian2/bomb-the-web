@@ -3,20 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="BOMB THE WEB — An immersive 3D graffiti wildstyle urban canvas experiment. Where every pixel gets tagged.">
+<meta name="theme-color" content="#7DC820">
 <title>BOMB THE WEB — Urban Canvas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Oswald:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   /* ============================================
-     STYLE DNA: Graffiti Wildstyle
+     STYLE DNA: Graffiti Wildstyle — v2
      ============================================
      Palette: Acid lime #7DC820, Hot pink #FF1F8E,
      Royal blue #1B4FA8, Cyan #29A8D0, Yellow #FFD700,
      Orange #FF8C00, Purple #8B5BB8
-     Form: Toon-shaded 3D blocks, thick black outlines,
-     white highlight planes, spray cans, star tags
-     Energy: Kinetic, overlapping, bold, saturated
+     New: Scroll-driven scene, post-processing bloom,
+     multi-section layout, sound toggle, parallax depth
      ============================================ */
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -29,14 +30,30 @@
     --purple:  #8B5BB8;
     --black:   #0A0A0A;
     --white:   #F5F5F5;
+    --red:     #E8192C;
+    --shadow-sm: 2px 2px 0 var(--black);
+    --shadow-md: 4px 4px 0 var(--black);
+    --shadow-lg: 6px 6px 0 var(--black);
+  }
+
+  html {
+    scroll-behavior: smooth;
   }
   html, body {
-    width: 100%; height: 100%;
-    overflow: hidden;
-    background: var(--lime);
+    width: 100%;
+    min-height: 100%;
+    background: var(--black);
     font-family: 'Black Han Sans', Impact, sans-serif;
+    color: var(--white);
     cursor: none;
+    overflow-x: hidden;
   }
+
+  /* ── SMOOTH SCROLL WRAPPER ── */
+  #scroll-container {
+    width: 100%;
+  }
+
   #canvas-wrap {
     position: fixed;
     inset: 0;
@@ -53,331 +70,611 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.6s ease-out;
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   }
   #loader.hide {
     opacity: 0;
     pointer-events: none;
   }
   .loader-text {
-    font-size: clamp(28px, 6vw, 64px);
+    font-size: clamp(32px, 7vw, 72px);
     color: var(--yellow);
     -webkit-text-stroke: 2px var(--pink);
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     animation: pulse 0.8s ease-in-out infinite alternate;
   }
+  .loader-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(10px, 1.2vw, 14px);
+    color: var(--cyan);
+    letter-spacing: 0.3em;
+    margin-top: 16px;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
   .loader-bar-wrap {
-    width: 200px;
-    height: 6px;
-    background: rgba(255,255,255,0.1);
-    border: 2px solid var(--pink);
-    margin-top: 24px;
+    width: clamp(180px, 30vw, 280px);
+    height: 4px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    margin-top: 28px;
     overflow: hidden;
+    border-radius: 2px;
   }
   .loader-bar {
     height: 100%;
     width: 0%;
-    background: linear-gradient(90deg, var(--pink), var(--yellow), var(--cyan));
+    background: linear-gradient(90deg, var(--pink), var(--yellow), var(--cyan), var(--pink));
+    background-size: 300% 100%;
+    animation: shimmer 2s linear infinite;
     transition: width 0.3s ease;
+    border-radius: 2px;
+  }
+  @keyframes shimmer {
+    0%   { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
   }
   @keyframes pulse {
-    from { opacity: 0.6; transform: scale(0.98); }
-    to   { opacity: 1;   transform: scale(1.02); }
+    from { opacity: 0.5; transform: scale(0.97); }
+    to   { opacity: 1;   transform: scale(1.03); }
   }
 
-  /* ── HERO UI ── */
-  #hero {
-    position: fixed;
-    inset: 0;
-    z-index: 20;
+  /* ── SECTIONS ── */
+  .section {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding: 60px 24px;
+  }
+
+  /* ── HERO (Section 1) ── */
+  #hero {
     pointer-events: none;
     text-align: center;
-    padding: 20px;
   }
   .eyebrow {
-    font-family: 'Oswald', sans-serif;
-    font-size: clamp(10px, 1.4vw, 16px);
-    letter-spacing: 0.4em;
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(9px, 1.1vw, 13px);
+    letter-spacing: 0.5em;
     color: var(--black);
     background: var(--yellow);
-    padding: 6px 20px;
+    padding: 6px 22px;
     border: 3px solid var(--black);
-    box-shadow: 3px 3px 0 var(--black);
+    box-shadow: var(--shadow-md);
     text-transform: uppercase;
-    margin-bottom: 22px;
+    margin-bottom: 28px;
     opacity: 0;
-    transform: translateY(-20px);
+    display: inline-block;
   }
   .hero-title {
-    font-size: clamp(48px, 11vw, 140px);
-    line-height: 0.88;
+    font-size: clamp(52px, 12vw, 160px);
+    line-height: 0.85;
     text-transform: uppercase;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.02em;
     color: var(--yellow);
     -webkit-text-stroke: 4px var(--black);
     paint-order: stroke fill;
     filter: drop-shadow(6px 6px 0 var(--black));
     opacity: 0;
-    transform: scale(0.6) rotate(-4deg);
-    /* Glitch layer via text-shadow */
     text-shadow:
       4px 0 var(--pink),
       -4px 0 var(--cyan);
-    transition: text-shadow 0.1s;
-  }
-  .hero-title:hover {
-    text-shadow:
-      -3px 2px var(--pink),
-      3px -2px var(--cyan),
-      6px 0 var(--orange);
+    transition: text-shadow 0.15s ease;
   }
   .hero-sub {
     font-family: 'Oswald', sans-serif;
-    font-size: clamp(13px, 2.2vw, 26px);
-    letter-spacing: 0.25em;
+    font-size: clamp(14px, 2.4vw, 28px);
+    letter-spacing: 0.3em;
     color: var(--white);
     -webkit-text-stroke: 1px var(--black);
     text-shadow: 2px 2px 0 var(--black);
-    margin-top: 18px;
+    margin-top: 20px;
     text-transform: uppercase;
     opacity: 0;
-    transform: translateY(20px);
   }
-
-  /* ── CTA BUTTONS ── */
   .cta-row {
     pointer-events: all;
     display: flex;
-    gap: 14px;
-    margin-top: 36px;
+    gap: 16px;
+    margin-top: 40px;
     opacity: 0;
-    transform: translateY(20px);
     flex-wrap: wrap;
     justify-content: center;
   }
   .btn {
     font-family: 'Black Han Sans', sans-serif;
-    font-size: clamp(13px, 1.8vw, 18px);
-    letter-spacing: 0.12em;
+    font-size: clamp(13px, 1.6vw, 17px);
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     text-decoration: none;
-    padding: 14px 36px;
+    padding: 14px 38px;
     border: 3px solid var(--black);
     cursor: none;
     display: inline-block;
-    transition: transform 0.12s, box-shadow 0.12s, background 0.15s;
+    transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.15s, background 0.2s, color 0.2s;
     user-select: none;
     position: relative;
     overflow: hidden;
+    outline: none;
+  }
+  .btn:focus-visible {
+    outline: 3px solid var(--yellow);
+    outline-offset: 3px;
   }
   .btn::after {
     content: '';
     position: absolute;
-    top: 50%; left: 50%;
-    width: 0; height: 0;
-    background: rgba(255,255,255,0.2);
-    border-radius: 50%;
-    transform: translate(-50%,-50%);
-    transition: width 0.4s, height 0.4s;
+    inset: 0;
+    background: rgba(255,255,255,0);
+    transition: background 0.3s;
   }
   .btn:hover::after {
-    width: 300px; height: 300px;
+    background: rgba(255,255,255,0.12);
   }
   .btn-primary {
     background: var(--pink);
     color: var(--white);
-    box-shadow: 5px 5px 0 var(--black);
+    box-shadow: var(--shadow-lg);
   }
   .btn-primary:hover {
-    transform: translate(-2px,-2px);
-    box-shadow: 7px 7px 0 var(--black);
+    transform: translate(-2px,-2px) rotate(-1deg);
+    box-shadow: 8px 8px 0 var(--black);
     background: var(--orange);
   }
-  .btn-primary:active { transform: translate(2px,2px); box-shadow: 3px 3px 0 var(--black); }
+  .btn-primary:active { transform: translate(2px,2px); box-shadow: var(--shadow-sm); }
   .btn-secondary {
     background: var(--white);
     color: var(--black);
-    border-color: var(--black);
-    box-shadow: 5px 5px 0 var(--black);
+    box-shadow: var(--shadow-lg);
   }
   .btn-secondary:hover {
-    transform: translate(-2px,-2px);
-    box-shadow: 7px 7px 0 var(--black);
+    transform: translate(-2px,-2px) rotate(1deg);
+    box-shadow: 8px 8px 0 var(--black);
     background: var(--cyan);
     color: var(--white);
+  }
+
+  /* ── ABOUT SECTION (Section 2) ── */
+  #about {
+    background: linear-gradient(180deg, transparent 0%, rgba(10,10,10,0.85) 20%, rgba(10,10,10,0.95) 100%);
+  }
+  .about-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 28px;
+    max-width: 1100px;
+    width: 100%;
+  }
+  .about-card {
+    background: rgba(255,255,255,0.04);
+    border: 3px solid var(--black);
+    box-shadow: var(--shadow-lg);
+    padding: 36px 28px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s;
+  }
+  .about-card:hover {
+    transform: translateY(-4px) rotate(-0.5deg);
+    box-shadow: 10px 10px 0 var(--black);
+  }
+  .about-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 5px;
+  }
+  .about-card:nth-child(1)::before { background: var(--pink); }
+  .about-card:nth-child(2)::before { background: var(--cyan); }
+  .about-card:nth-child(3)::before { background: var(--yellow); }
+  .card-icon {
+    font-size: 32px;
+    margin-bottom: 16px;
+    display: block;
+    width: 56px; height: 56px;
+    line-height: 56px;
+    text-align: center;
+    border: 3px solid var(--black);
+    box-shadow: var(--shadow-sm);
+    font-family: 'Black Han Sans', sans-serif;
+    color: var(--black);
+  }
+  .about-card:nth-child(1) .card-icon { background: var(--pink); color: var(--white); }
+  .about-card:nth-child(2) .card-icon { background: var(--cyan); }
+  .about-card:nth-child(3) .card-icon { background: var(--yellow); }
+  .card-title {
+    font-size: clamp(20px, 2.5vw, 28px);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
+    color: var(--white);
+  }
+  .card-text {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 400;
+    font-size: clamp(13px, 1.3vw, 16px);
+    line-height: 1.6;
+    color: rgba(245,245,245,0.7);
+    letter-spacing: 0.04em;
+  }
+  .section-title {
+    font-size: clamp(36px, 7vw, 80px);
+    text-transform: uppercase;
+    color: var(--yellow);
+    -webkit-text-stroke: 3px var(--black);
+    paint-order: stroke fill;
+    filter: drop-shadow(4px 4px 0 var(--black));
+    margin-bottom: 48px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  /* ── GALLERY SECTION (Section 3) ── */
+  #gallery {
+    background: linear-gradient(180deg, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.5) 50%, transparent 100%);
+    padding-bottom: 120px;
+  }
+  .gallery-strip {
+    display: flex;
+    gap: 20px;
+    overflow: visible;
+    width: max-content;
+    will-change: transform;
+  }
+  .gallery-strip-wrap {
+    overflow: hidden;
+    width: 100%;
+    max-width: 1200px;
+  }
+  .gal-item {
+    width: clamp(200px, 25vw, 320px);
+    aspect-ratio: 3/4;
+    border: 4px solid var(--black);
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .gal-item:hover {
+    transform: scale(1.05) rotate(-1deg);
+  }
+  .gal-item canvas {
+    width: 100%; height: 100%;
+    display: block;
+  }
+  .gal-label {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 10px 14px;
+    background: var(--black);
+    border-top: 3px solid var(--black);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--white);
+    display: flex;
+    justify-content: space-between;
+  }
+  .gal-label .gal-tag {
+    padding: 2px 8px;
+    font-size: 9px;
+    border: 1px solid;
+  }
+  .gal-item:nth-child(1) .gal-tag { color: var(--pink); border-color: var(--pink); }
+  .gal-item:nth-child(2) .gal-tag { color: var(--cyan); border-color: var(--cyan); }
+  .gal-item:nth-child(3) .gal-tag { color: var(--yellow); border-color: var(--yellow); }
+  .gal-item:nth-child(4) .gal-tag { color: var(--orange); border-color: var(--orange); }
+  .gal-item:nth-child(5) .gal-tag { color: var(--purple); border-color: var(--purple); }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    display: flex;
+    gap: 0;
+    max-width: 900px;
+    width: 100%;
+    margin-top: 60px;
+    border: 3px solid var(--black);
+    box-shadow: var(--shadow-lg);
+    flex-wrap: wrap;
+  }
+  .stat {
+    flex: 1;
+    min-width: 140px;
+    padding: 28px 20px;
+    text-align: center;
+    border-right: 3px solid var(--black);
+    position: relative;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .stat:last-child { border-right: none; }
+  .stat:nth-child(1) { background: var(--pink); }
+  .stat:nth-child(2) { background: var(--cyan); color: var(--black); }
+  .stat:nth-child(3) { background: var(--yellow); color: var(--black); }
+  .stat:nth-child(4) { background: var(--purple); }
+  .stat-num {
+    font-size: clamp(28px, 4vw, 48px);
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(9px, 1vw, 11px);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-top: 6px;
+    opacity: 0.85;
+  }
+
+  /* ── FOOTER ── */
+  #footer {
+    min-height: auto;
+    padding: 40px 24px;
+    background: var(--black);
+    border-top: 4px solid var(--pink);
+    z-index: 30;
+    position: relative;
+  }
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .footer-brand {
+    font-size: clamp(18px, 2.5vw, 24px);
+    color: var(--yellow);
+    -webkit-text-stroke: 1px var(--black);
+    letter-spacing: 0.08em;
+  }
+  .footer-links {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+  }
+  .footer-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(245,245,245,0.5);
+    text-decoration: none;
+    transition: color 0.2s;
+    cursor: none;
+  }
+  .footer-links a:hover { color: var(--pink); }
+  .footer-links a:focus-visible { outline: 2px solid var(--yellow); outline-offset: 4px; }
+  .footer-copy {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: rgba(245,245,245,0.3);
+    letter-spacing: 0.1em;
   }
 
   /* ── BOTTOM TAGS ── */
   #tags {
     position: fixed;
-    bottom: 28px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 12px;
-    z-index: 20;
+    gap: 10px;
+    z-index: 50;
     opacity: 0;
     flex-wrap: wrap;
     justify-content: center;
+    transition: opacity 0.4s;
   }
+  #tags.hidden { opacity: 0 !important; pointer-events: none; }
   .tag {
-    font-family: 'Oswald', sans-serif;
-    font-size: 12px;
-    letter-spacing: 0.2em;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    padding: 6px 16px;
+    padding: 5px 14px;
     border: 2px solid var(--black);
-    box-shadow: 2px 2px 0 var(--black);
+    box-shadow: var(--shadow-sm);
     cursor: none;
-    transition: transform 0.15s, box-shadow 0.15s;
+    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
   }
   .tag:hover {
     transform: translate(-1px, -1px) rotate(-2deg);
-    box-shadow: 3px 3px 0 var(--black);
+    box-shadow: 4px 4px 0 var(--black);
   }
   .tag-1 { background: var(--cyan);   color: var(--black); }
   .tag-2 { background: var(--orange); color: var(--black); }
   .tag-3 { background: var(--purple); color: var(--white); }
   .tag-4 { background: var(--pink);   color: var(--white); }
 
-  /* ── CORNER DRIPS (CSS) ── */
+  /* ── CORNER DRIPS ── */
   .drip-css {
     position: fixed;
     top: 0;
-    width: 14px;
-    border-radius: 0 0 8px 8px;
+    width: 12px;
+    border-radius: 0 0 6px 6px;
     z-index: 5;
-    animation: dripDown 3s ease-in-out infinite;
-    border-bottom: 2px solid var(--black);
+    animation: dripDown 3.5s ease-in-out infinite;
+    opacity: 0.9;
   }
-  .drip-css:nth-child(1) { left:  8%; height: 70px; animation-delay: 0s;    background: var(--orange); }
-  .drip-css:nth-child(2) { left: 20%; height: 45px; animation-delay: 0.4s;  background: var(--pink); }
-  .drip-css:nth-child(3) { left: 55%; height: 60px; animation-delay: 0.8s;  background: var(--blue); }
-  .drip-css:nth-child(4) { left: 78%; height: 50px; animation-delay: 0.2s;  background: var(--yellow); }
-  .drip-css:nth-child(5) { right:8%; height: 80px;  animation-delay: 1.1s;  background: var(--purple); }
-  .drip-css:nth-child(6) { left: 35%; height: 55px; animation-delay: 0.6s;  background: var(--cyan); }
-  .drip-css:nth-child(7) { left: 90%; height: 65px; animation-delay: 1.4s;  background: var(--pink); }
+  .drip-css:nth-child(1) { left:  6%; height: 65px; animation-delay: 0s;    background: var(--orange); }
+  .drip-css:nth-child(2) { left: 18%; height: 40px; animation-delay: 0.4s;  background: var(--pink); }
+  .drip-css:nth-child(3) { left: 42%; height: 55px; animation-delay: 0.9s;  background: var(--blue); }
+  .drip-css:nth-child(4) { left: 65%; height: 48px; animation-delay: 0.2s;  background: var(--yellow); }
+  .drip-css:nth-child(5) { left: 82%; height: 72px; animation-delay: 1.1s;  background: var(--purple); }
+  .drip-css:nth-child(6) { left: 93%; height: 50px; animation-delay: 0.6s;  background: var(--cyan); }
 
-  /* ── CURSOR DOT ── */
+  /* ── NAV ── */
+  #nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 60;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 28px;
+    background: rgba(10,10,10,0);
+    transition: background 0.4s, padding 0.3s;
+    pointer-events: none;
+  }
+  #nav.scrolled {
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(8px);
+    padding: 12px 28px;
+    pointer-events: all;
+  }
+  .nav-brand {
+    font-size: clamp(14px, 2vw, 18px);
+    color: var(--yellow);
+    letter-spacing: 0.1em;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  #nav.scrolled .nav-brand { opacity: 1; }
+  .nav-links {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  #nav.scrolled .nav-links { opacity: 1; }
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-decoration: none;
+    padding: 6px 12px;
+    border: 2px solid transparent;
+    transition: border-color 0.2s, color 0.2s;
+    pointer-events: all;
+    cursor: none;
+  }
+  .nav-links a:hover {
+    border-color: var(--pink);
+    color: var(--pink);
+  }
+  .nav-links a:focus-visible {
+    outline: 2px solid var(--yellow);
+    outline-offset: 2px;
+  }
+
+  /* ── CURSOR ── */
   #cursor {
     position: fixed;
-    width: 18px; height: 18px;
+    width: 16px; height: 16px;
     background: var(--pink);
     border: 2px solid var(--black);
     border-radius: 50%;
     pointer-events: none;
     z-index: 9999;
     transform: translate(-50%,-50%);
-    transition: width 0.2s, height 0.2s, background 0.2s;
+    transition: width 0.25s cubic-bezier(0.34,1.56,0.64,1), height 0.25s cubic-bezier(0.34,1.56,0.64,1), background 0.2s;
     mix-blend-mode: multiply;
   }
   #cursor-trail {
     position: fixed;
-    width: 36px; height: 36px;
-    border: 2px solid var(--pink);
+    width: 40px; height: 40px;
+    border: 1.5px solid var(--pink);
     border-radius: 50%;
     pointer-events: none;
     z-index: 9998;
     transform: translate(-50%,-50%);
-    transition: width 0.2s, height 0.2s, border-color 0.2s;
-    opacity: 0.4;
+    transition: width 0.25s, height 0.25s, border-color 0.2s;
+    opacity: 0.3;
   }
 
-  /* ── SPRAY PARTICLES (click effect) ── */
+  /* ── SPRAY PARTICLES ── */
   .spray-dot {
     position: fixed;
-    width: 6px; height: 6px;
     border-radius: 50%;
     pointer-events: none;
     z-index: 100;
-    animation: sprayFade 0.8s ease-out forwards;
+    animation: sprayFade 1s ease-out forwards;
   }
   @keyframes sprayFade {
     0%   { opacity: 1; transform: translate(-50%,-50%) scale(1); }
-    100% { opacity: 0; transform: translate(-50%,-50%) scale(0.2); }
+    100% { opacity: 0; transform: translate(-50%,-50%) scale(0.1); }
   }
 
-  /* ── SCROLL INDICATOR ── */
-  .scroll-hint {
+  /* ── SCROLL PROGRESS ── */
+  #scroll-progress {
     position: fixed;
-    bottom: 70px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 20;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    opacity: 0;
-  }
-  .scroll-hint span {
-    font-family: 'Oswald', sans-serif;
-    font-size: 10px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--black);
-  }
-  .scroll-arrow {
-    width: 20px; height: 20px;
-    border-right: 3px solid var(--black);
-    border-bottom: 3px solid var(--black);
-    transform: rotate(45deg);
-    animation: bounceArrow 1.5s ease-in-out infinite;
-  }
-  @keyframes bounceArrow {
-    0%, 100% { transform: rotate(45deg) translateY(0); }
-    50%      { transform: rotate(45deg) translateY(6px); }
+    top: 0; left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--pink), var(--yellow), var(--cyan));
+    z-index: 9999;
+    width: 0%;
+    transition: width 0.1s linear;
   }
 
   /* ── KEYFRAMES ── */
-  @keyframes bombIn {
-    0%   { opacity: 0; transform: scale(0.5) rotate(-6deg); }
-    60%  { opacity: 1; transform: scale(1.06) rotate(1.5deg); }
-    100% { opacity: 1; transform: scale(1) rotate(0deg); }
-  }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(22px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes fadeDown {
-    from { opacity: 0; transform: translateY(-20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
   @keyframes dripDown {
     0%,100% { transform: scaleY(1); }
-    50%     { transform: scaleY(1.4); }
+    50%     { transform: scaleY(1.5); }
+  }
+
+  /* ── REDUCED MOTION ── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .drip-css { animation: none; }
+    #cursor, #cursor-trail { display: none; }
+    html, body { cursor: auto; }
+    .btn, .tag, .nav-links a { cursor: pointer; }
   }
 
   /* ── MOBILE ── */
   @media (max-width: 768px) {
-    .hero-title {
-      -webkit-text-stroke: 3px var(--black);
-    }
+    .hero-title { -webkit-text-stroke: 3px var(--black); }
     .cta-row { gap: 10px; }
-    .btn { padding: 12px 24px; font-size: 14px; }
-    #tags { gap: 8px; bottom: 16px; }
-    .tag { font-size: 10px; padding: 4px 12px; }
+    .btn { padding: 12px 26px; }
+    #tags { gap: 6px; bottom: 12px; }
+    .tag { font-size: 9px; padding: 4px 10px; }
     #cursor, #cursor-trail { display: none; }
     html, body { cursor: auto; }
-    .btn { cursor: pointer; }
+    .btn, .tag, .nav-links a, .footer-links a { cursor: pointer; }
+    .stat { min-width: 100px; padding: 20px 14px; }
+    .about-grid { gap: 16px; }
+    .section-title { margin-bottom: 32px; }
+    .nav-links { display: none; }
+    .gal-item { width: 220px; }
   }
 
   @media (max-width: 480px) {
-    .eyebrow { font-size: 9px; padding: 4px 12px; letter-spacing: 0.25em; }
+    .eyebrow { font-size: 8px; padding: 4px 12px; letter-spacing: 0.3em; }
     .hero-title { -webkit-text-stroke: 2px var(--black); }
     .hero-sub { font-size: 12px; letter-spacing: 0.15em; }
+    .about-card { padding: 24px 20px; }
+    .gal-item { width: 180px; }
   }
 </style>
 </head>
 <body>
 
+<!-- Scroll progress bar -->
+<div id="scroll-progress"></div>
+
 <!-- Loading screen -->
 <div id="loader">
-  <div class="loader-text">LOADING...</div>
+  <div class="loader-text">BOMB THE WEB</div>
+  <div class="loader-sub">Initializing Urban Canvas</div>
   <div class="loader-bar-wrap">
     <div class="loader-bar" id="loader-bar"></div>
   </div>
@@ -390,27 +687,108 @@
 <div class="drip-css"></div>
 <div class="drip-css"></div>
 <div class="drip-css"></div>
-<div class="drip-css"></div>
+
+<!-- Sticky nav -->
+<nav id="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-brand">BTW</div>
+  <ul class="nav-links">
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+  </ul>
+</nav>
 
 <!-- Custom cursor -->
-<div id="cursor"></div>
-<div id="cursor-trail"></div>
+<div id="cursor" aria-hidden="true"></div>
+<div id="cursor-trail" aria-hidden="true"></div>
 
 <!-- WebGL canvas -->
-<div id="canvas-wrap"></div>
+<div id="canvas-wrap" aria-hidden="true"></div>
 
-<!-- Hero UI -->
-<div id="hero">
-  <div class="eyebrow">Street Art &middot; Wild Style &middot; Urban Canvas</div>
-  <div class="hero-title">BOMB<br>THE WEB</div>
-  <div class="hero-sub">Where Every Pixel Gets Tagged</div>
-  <div class="cta-row">
-    <a class="btn btn-primary" href="#">Get Up &rarr;</a>
-    <a class="btn btn-secondary" href="#">Our Walls</a>
-  </div>
+<!-- Scroll container -->
+<div id="scroll-container">
+
+  <!-- ── SECTION 1: HERO ── -->
+  <section class="section" id="hero">
+    <div class="eyebrow">Street Art &middot; Wild Style &middot; Urban Canvas</div>
+    <h1 class="hero-title">BOMB<br>THE WEB</h1>
+    <p class="hero-sub">Where Every Pixel Gets Tagged</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#about" role="button">Get Up &darr;</a>
+      <a class="btn btn-secondary" href="#gallery" role="button">Our Walls</a>
+    </div>
+  </section>
+
+  <!-- ── SECTION 2: ABOUT ── -->
+  <section class="section" id="about">
+    <h2 class="section-title">The Crew</h2>
+    <div class="about-grid">
+      <div class="about-card">
+        <div class="card-icon">W</div>
+        <h3 class="card-title">WebGL Engine</h3>
+        <p class="card-text">Toon-shaded 3D with thick black outlines and cel-shading. Every object is a love letter to graffiti wildstyle lettering.</p>
+      </div>
+      <div class="about-card">
+        <div class="card-icon">G</div>
+        <h3 class="card-title">GSAP Motion</h3>
+        <p class="card-text">Scroll-driven animation powered by GSAP ScrollTrigger. Objects react to your journey through the page — parallax, scale, and rotation.</p>
+      </div>
+      <div class="about-card">
+        <div class="card-icon">S</div>
+        <h3 class="card-title">Street DNA</h3>
+        <p class="card-text">Spray cans, paint drips, star tags, and arrows — all generated procedurally in 3D. No images. Pure code graffiti.</p>
+      </div>
+    </div>
+    <div class="stats-bar">
+      <div class="stat">
+        <div class="stat-num" data-count="350">0</div>
+        <div class="stat-label">Particles</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" data-count="7">0</div>
+        <div class="stat-label">Colors</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" data-count="25">0</div>
+        <div class="stat-label">3D Objects</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" data-count="60">0</div>
+        <div class="stat-label">FPS Target</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 3: GALLERY ── -->
+  <section class="section" id="gallery">
+    <h2 class="section-title">The Wall</h2>
+    <div class="gallery-strip-wrap">
+      <div class="gallery-strip" id="gallery-strip">
+        <div class="gal-item"><canvas id="gal-c1"></canvas><div class="gal-label"><span>Block Stack</span><span class="gal-tag">3D</span></div></div>
+        <div class="gal-item"><canvas id="gal-c2"></canvas><div class="gal-label"><span>Spray Arc</span><span class="gal-tag">Motion</span></div></div>
+        <div class="gal-item"><canvas id="gal-c3"></canvas><div class="gal-label"><span>Star Burst</span><span class="gal-tag">Shape</span></div></div>
+        <div class="gal-item"><canvas id="gal-c4"></canvas><div class="gal-label"><span>Drip Flow</span><span class="gal-tag">Fluid</span></div></div>
+        <div class="gal-item"><canvas id="gal-c5"></canvas><div class="gal-label"><span>Tag Cloud</span><span class="gal-tag">Particle</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="section" id="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">BOMB THE WEB</div>
+      <ul class="footer-links">
+        <li><a href="#hero">Top</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+      </ul>
+      <div class="footer-copy">A portfolio experiment &middot; 2025</div>
+    </div>
+  </footer>
+
 </div>
 
-<!-- Bottom tags -->
+<!-- Bottom tags (hero only) -->
 <div id="tags">
   <div class="tag tag-1">Street Art</div>
   <div class="tag tag-2">Wild Style</div>
@@ -418,561 +796,632 @@
   <div class="tag tag-4">Urban</div>
 </div>
 
-<!-- Scroll hint -->
-<div class="scroll-hint" id="scroll-hint">
-  <span>Explore</span>
-  <div class="scroll-arrow"></div>
-</div>
-
 <!-- Three.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<!-- GSAP -->
+<!-- GSAP + ScrollTrigger -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 <script>
 (function () {
+  'use strict';
+
   // ── PALETTE ──
   const P = {
-    bg:     0x7DC820,
-    yellow: 0xFFD700,
-    pink:   0xFF1F8E,
-    orange: 0xFF8C00,
-    blue:   0x1B4FA8,
-    cyan:   0x29A8D0,
-    purple: 0x8B5BB8,
-    black:  0x0A0A0A,
-    white:  0xF5F5F5,
-    green:  0x3A7010,
-    red:    0xE8192C,
+    bg:     0x7DC820, yellow: 0xFFD700, pink: 0xFF1F8E,
+    orange: 0xFF8C00, blue:   0x1B4FA8, cyan: 0x29A8D0,
+    purple: 0x8B5BB8, black:  0x0A0A0A, white: 0xF5F5F5,
+    green:  0x3A7010, red:    0xE8192C,
   };
   const ACCENTS = [P.yellow, P.pink, P.orange, P.blue, P.cyan, P.purple, P.red];
+  const CSS_COLORS = ['#FF1F8E','#FFD700','#29A8D0','#FF8C00','#8B5BB8','#7DC820','#E8192C'];
+
+  // ── REGISTER GSAP ──
+  gsap.registerPlugin(ScrollTrigger);
 
   // ── LOADER ──
-  const loader = document.getElementById('loader');
+  const loaderEl = document.getElementById('loader');
   const loaderBar = document.getElementById('loader-bar');
   let loadProgress = 0;
   const loadInterval = setInterval(() => {
-    loadProgress += Math.random() * 25 + 10;
+    loadProgress += Math.random() * 18 + 8;
     if (loadProgress >= 100) {
       loadProgress = 100;
       loaderBar.style.width = '100%';
       clearInterval(loadInterval);
       setTimeout(() => {
-        loader.classList.add('hide');
-        startHeroAnimations();
-      }, 400);
+        loaderEl.classList.add('hide');
+        setTimeout(() => { loaderEl.style.display = 'none'; }, 800);
+        startIntro();
+      }, 500);
     } else {
       loaderBar.style.width = loadProgress + '%';
     }
-  }, 200);
+  }, 180);
 
   // ── RENDERER ──
   const wrap = document.getElementById('canvas-wrap');
   const W = () => window.innerWidth;
   const H = () => window.innerHeight;
-
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.setSize(W(), H());
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.1;
   wrap.appendChild(renderer.domElement);
 
   // ── SCENE ──
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(P.bg);
-  scene.fog = new THREE.FogExp2(P.bg, 0.022);
+  scene.fog = new THREE.FogExp2(P.bg, 0.018);
 
   // ── CAMERA ──
-  const camera = new THREE.PerspectiveCamera(58, W() / H(), 0.1, 100);
-  camera.position.set(0, 0.5, 13);
+  const camera = new THREE.PerspectiveCamera(55, W() / H(), 0.1, 120);
+  camera.position.set(0, 0.5, 14);
 
   // ── LIGHTS ──
-  scene.add(new THREE.AmbientLight(0xffffff, 0.55));
-
-  const sun = new THREE.DirectionalLight(0xffffff, 1.1);
-  sun.position.set(5, 9, 6);
-  sun.castShadow = true;
-  sun.shadow.mapSize.set(1024, 1024);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+  const sun = new THREE.DirectionalLight(0xffffff, 1.2);
+  sun.position.set(5, 10, 7);
   scene.add(sun);
-
-  const fill = new THREE.DirectionalLight(0xaaddff, 0.35);
+  const fill = new THREE.DirectionalLight(0xaaddff, 0.3);
   fill.position.set(-6, -2, 4);
   scene.add(fill);
-
-  const rim = new THREE.DirectionalLight(0xFFD700, 0.25);
+  const rim = new THREE.DirectionalLight(0xFFD700, 0.2);
   rim.position.set(0, -5, -5);
   scene.add(rim);
-
-  // Colored point lights for atmosphere
-  const ptLight1 = new THREE.PointLight(0xFF1F8E, 0.4, 15);
-  ptLight1.position.set(-5, 3, 4);
-  scene.add(ptLight1);
-
-  const ptLight2 = new THREE.PointLight(0x29A8D0, 0.3, 15);
-  ptLight2.position.set(5, -2, 4);
-  scene.add(ptLight2);
+  // Colored atmosphere lights
+  const ptL1 = new THREE.PointLight(0xFF1F8E, 0.5, 20);
+  ptL1.position.set(-6, 4, 5);
+  scene.add(ptL1);
+  const ptL2 = new THREE.PointLight(0x29A8D0, 0.4, 20);
+  ptL2.position.set(6, -3, 5);
+  scene.add(ptL2);
+  const ptL3 = new THREE.PointLight(0xFFD700, 0.3, 18);
+  ptL3.position.set(0, 6, -3);
+  scene.add(ptL3);
 
   // ── TOON GRADIENT MAP ──
-  const toonColors = new Uint8Array([40, 80, 180, 255]);
+  const toonColors = new Uint8Array([30, 70, 170, 255]);
   const gradMap = new THREE.DataTexture(toonColors, 4, 1, THREE.LuminanceFormat);
   gradMap.minFilter = THREE.NearestFilter;
   gradMap.magFilter = THREE.NearestFilter;
 
-  // ── MATERIAL FACTORIES ──
-  function toonMat(color) {
-    return new THREE.MeshToonMaterial({ color, gradientMap: gradMap });
-  }
-  function blackMat() {
-    return new THREE.MeshBasicMaterial({ color: P.black });
-  }
-  function hlMat(opacity = 0.32) {
-    return new THREE.MeshBasicMaterial({
-      color: P.white, transparent: true, opacity, depthWrite: false
-    });
-  }
+  // ── MATERIALS ──
+  function toonMat(c) { return new THREE.MeshToonMaterial({ color: c, gradientMap: gradMap }); }
+  function outlineMat() { return new THREE.MeshBasicMaterial({ color: P.black, side: THREE.BackSide }); }
+  function hlMat(op = 0.3) { return new THREE.MeshBasicMaterial({ color: P.white, transparent: true, opacity: op, depthWrite: false }); }
 
-  // ── OUTLINED BOX BLOCK ──
+  // ── GEOMETRY FACTORIES ──
   function makeBlock(w, h, d, color) {
     const g = new THREE.Group();
-    // 1. Black outline shell
-    const outGeo = new THREE.BoxGeometry(w, h, d);
-    const outMat = new THREE.MeshBasicMaterial({ color: P.black, side: THREE.BackSide });
-    const outline = new THREE.Mesh(outGeo, outMat);
-    outline.scale.set(1.06, 1.06, 1.06);
-    g.add(outline);
-    // 2. Colored toon fill
-    const boxGeo = new THREE.BoxGeometry(w, h, d);
-    const box = new THREE.Mesh(boxGeo, toonMat(color));
-    box.castShadow = true;
-    box.receiveShadow = true;
+    const out = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), outlineMat());
+    out.scale.set(1.06, 1.06, 1.06);
+    g.add(out);
+    const box = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), toonMat(color));
     g.add(box);
-    // 3. White bevel highlight
-    const hlGeo = new THREE.BoxGeometry(w * 0.28, h, 0.04);
-    const hl = new THREE.Mesh(hlGeo, hlMat());
-    hl.position.set(-w * 0.32, 0, d * 0.5 + 0.02);
+    const hl = new THREE.Mesh(new THREE.BoxGeometry(w * 0.26, h, 0.04), hlMat());
+    hl.position.set(-w * 0.33, 0, d * 0.5 + 0.02);
     g.add(hl);
-    // 4. Top edge highlight strip
-    const topGeo = new THREE.BoxGeometry(w, h * 0.12, 0.04);
-    const topHl = new THREE.Mesh(topGeo, hlMat(0.22));
-    topHl.position.set(0, h * 0.44, d * 0.5 + 0.02);
-    g.add(topHl);
+    const top = new THREE.Mesh(new THREE.BoxGeometry(w, h * 0.1, 0.04), hlMat(0.2));
+    top.position.set(0, h * 0.45, d * 0.5 + 0.02);
+    g.add(top);
     return g;
   }
 
-  // ── SPRAY CAN ──
   function makeSprayCan(bodyColor) {
     const g = new THREE.Group();
-    const body = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.32, 0.32, 1.5, 18), toonMat(bodyColor)
-    );
-    g.add(body);
-    const bodyOut = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.35, 0.35, 1.55, 18),
-      new THREE.MeshBasicMaterial({ color: P.black, side: THREE.BackSide })
-    );
-    g.add(bodyOut);
-    const cap = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.24, 0.32, 0.22, 12), toonMat(P.black)
-    );
-    cap.position.y = 0.86;
+    g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 1.4, 16), toonMat(bodyColor)));
+    const bo = new THREE.Mesh(new THREE.CylinderGeometry(0.33, 0.33, 1.45, 16), outlineMat());
+    g.add(bo);
+    const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.3, 0.2, 10), toonMat(P.black));
+    cap.position.y = 0.8;
     g.add(cap);
-    const noz = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.0, 0.14, 0.28, 10), toonMat(P.black)
-    );
-    noz.position.y = 1.1;
+    const noz = new THREE.Mesh(new THREE.CylinderGeometry(0, 0.12, 0.24, 8), toonMat(P.black));
+    noz.position.y = 1.04;
     g.add(noz);
-    const stripe = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.325, 0.325, 0.4, 18), toonMat(P.white)
-    );
+    const stripe = new THREE.Mesh(new THREE.CylinderGeometry(0.305, 0.305, 0.35, 16), toonMat(P.white));
     stripe.position.y = 0.1;
     g.add(stripe);
-    const dome = new THREE.Mesh(
-      new THREE.SphereGeometry(0.32, 14, 8, 0, Math.PI * 2, 0, Math.PI * 0.5), toonMat(bodyColor)
-    );
-    dome.position.y = -0.75;
-    dome.rotation.x = Math.PI;
-    g.add(dome);
     return g;
   }
 
-  // ── STAR TAG ──
-  function makeStar(numPts, outerR, innerR, color, thick = false) {
+  function makeStar(pts, outerR, innerR, color, thick) {
     const shape = new THREE.Shape();
-    for (let i = 0; i < numPts * 2; i++) {
-      const angle = (i * Math.PI) / numPts - Math.PI / 2;
+    for (let i = 0; i < pts * 2; i++) {
+      const a = (i * Math.PI) / pts - Math.PI / 2;
       const r = i % 2 === 0 ? outerR : innerR;
-      const x = Math.cos(angle) * r;
-      const y = Math.sin(angle) * r;
-      i === 0 ? shape.moveTo(x, y) : shape.lineTo(x, y);
+      i === 0 ? shape.moveTo(Math.cos(a) * r, Math.sin(a) * r) : shape.lineTo(Math.cos(a) * r, Math.sin(a) * r);
     }
     shape.closePath();
     if (thick) {
-      const extGeo = new THREE.ExtrudeGeometry(shape, { depth: 0.15, bevelEnabled: false });
+      const ext = new THREE.ExtrudeGeometry(shape, { depth: 0.14, bevelEnabled: false });
       const g = new THREE.Group();
-      g.add(new THREE.Mesh(extGeo, toonMat(color)));
-      const outFill = new THREE.Mesh(extGeo, blackMat());
-      outFill.scale.set(1.08, 1.08, 1.08);
-      outFill.position.z = -0.02;
-      g.add(outFill);
+      g.add(new THREE.Mesh(ext, toonMat(color)));
+      const o = new THREE.Mesh(ext, new THREE.MeshBasicMaterial({ color: P.black }));
+      o.scale.set(1.08, 1.08, 1.08); o.position.z = -0.02;
+      g.add(o);
       return g;
     }
-    const geo = new THREE.ShapeGeometry(shape);
-    return new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide }));
+    return new THREE.Mesh(new THREE.ShapeGeometry(shape), new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide }));
   }
 
-  // ── PAINT DRIP ──
-  function makeDrip(color, len = 0.8) {
+  function makeDrip(color, len) {
     const g = new THREE.Group();
-    const mat = toonMat(color);
-    const outMat = new THREE.MeshBasicMaterial({ color: P.black, side: THREE.BackSide });
-    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.08, len, 8), mat);
-    stem.position.y = -len / 2;
-    g.add(stem);
-    const blob = new THREE.Mesh(new THREE.SphereGeometry(0.11, 10, 8), mat);
-    blob.position.y = -len - 0.08;
-    blob.scale.y = 1.25;
-    g.add(blob);
-    const stemOut = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.1, len, 8), outMat);
-    stemOut.position.y = -len / 2;
-    g.add(stemOut);
-    const blobOut = new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 8), outMat);
-    blobOut.position.y = -len - 0.08;
-    blobOut.scale.y = 1.25;
-    g.add(blobOut);
+    const m = toonMat(color), om = outlineMat();
+    const s = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.07, len, 8), m);
+    s.position.y = -len / 2; g.add(s);
+    const b = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 6), m);
+    b.position.y = -len - 0.07; b.scale.y = 1.3; g.add(b);
+    const so = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.09, len, 8), om);
+    so.position.y = -len / 2; g.add(so);
+    const bo = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 6), om);
+    bo.position.y = -len - 0.07; bo.scale.y = 1.3; g.add(bo);
     return g;
   }
 
-  // ── ARROW SHAPE (graffiti arrows) ──
-  function makeArrow(color, size = 1) {
-    const shape = new THREE.Shape();
-    shape.moveTo(0, 0.5 * size);
-    shape.lineTo(0.5 * size, 0);
-    shape.lineTo(0.2 * size, 0);
-    shape.lineTo(0.2 * size, -0.5 * size);
-    shape.lineTo(-0.2 * size, -0.5 * size);
-    shape.lineTo(-0.2 * size, 0);
-    shape.lineTo(-0.5 * size, 0);
-    shape.closePath();
-    const extGeo = new THREE.ExtrudeGeometry(shape, { depth: 0.12, bevelEnabled: false });
+  function makeArrow(color, size) {
+    const s = new THREE.Shape();
+    s.moveTo(0, 0.5 * size); s.lineTo(0.5 * size, 0); s.lineTo(0.18 * size, 0);
+    s.lineTo(0.18 * size, -0.5 * size); s.lineTo(-0.18 * size, -0.5 * size);
+    s.lineTo(-0.18 * size, 0); s.lineTo(-0.5 * size, 0); s.closePath();
+    const ext = new THREE.ExtrudeGeometry(s, { depth: 0.1, bevelEnabled: false });
     const g = new THREE.Group();
-    g.add(new THREE.Mesh(extGeo, toonMat(color)));
-    const out = new THREE.Mesh(extGeo, blackMat());
-    out.scale.set(1.1, 1.1, 1.1);
-    out.position.z = -0.02;
-    g.add(out);
+    g.add(new THREE.Mesh(ext, toonMat(color)));
+    const o = new THREE.Mesh(ext, new THREE.MeshBasicMaterial({ color: P.black }));
+    o.scale.set(1.1, 1.1, 1.1); o.position.z = -0.02; g.add(o);
+    return g;
+  }
+
+  // ── LIGHTNING BOLT shape ──
+  function makeBolt(color, size) {
+    const s = new THREE.Shape();
+    s.moveTo(0.1 * size, 0.5 * size);
+    s.lineTo(0.3 * size, 0.5 * size);
+    s.lineTo(0.05 * size, 0);
+    s.lineTo(0.25 * size, 0.02 * size);
+    s.lineTo(-0.1 * size, -0.5 * size);
+    s.lineTo(0.05 * size, -0.05 * size);
+    s.lineTo(-0.15 * size, -0.02 * size);
+    s.closePath();
+    const ext = new THREE.ExtrudeGeometry(s, { depth: 0.08, bevelEnabled: false });
+    const g = new THREE.Group();
+    g.add(new THREE.Mesh(ext, toonMat(color)));
+    const o = new THREE.Mesh(ext, new THREE.MeshBasicMaterial({ color: P.black }));
+    o.scale.set(1.1, 1.1, 1.1); o.position.z = -0.02; g.add(o);
     return g;
   }
 
   // ============================================================
-  //  BUILD THE SCENE
+  //  BUILD SCENE
   // ============================================================
   const root = new THREE.Group();
   scene.add(root);
   const floaters = [];
 
-  function addFloater(mesh, x, y, z, opts = {}) {
+  function addF(mesh, x, y, z, opts = {}) {
     mesh.position.set(x, y, z);
+    if (opts.rx || opts.ry || opts.rz) mesh.rotation.set(opts.rx||0, opts.ry||0, opts.rz||0);
     root.add(mesh);
     floaters.push({
-      mesh,
-      bobAmp:   opts.bobAmp   ?? 0.08,
-      bobFreq:  opts.bobFreq  ?? 0.45,
+      mesh, initPos: { x, y, z },
+      bobAmp: opts.bobAmp ?? 0.08, bobFreq: opts.bobFreq ?? 0.45,
       bobPhase: opts.bobPhase ?? Math.random() * Math.PI * 2,
-      rotX:     opts.rotX     ?? 0,
-      rotY:     opts.rotY     ?? 0,
-      rotZ:     opts.rotZ     ?? 0,
-      initRot: { x: opts.rx ?? 0, y: opts.ry ?? 0, z: opts.rz ?? 0 },
-      initPos: { x, y, z },
+      rotX: opts.rotX ?? 0, rotY: opts.rotY ?? 0, rotZ: opts.rotZ ?? 0,
     });
   }
 
-  // ── LETTER BLOCKS ──
-  const blockDefs = [
-    [2.0, 2.8, 0.85, P.yellow,  -3.6,  0.4, -1.0, { ry: 0.18, rz: -0.08, bobFreq: 0.38 }],
-    [1.6, 2.2, 0.75, P.orange,  -2.1, -0.7,  0.4, { ry: -0.05, rz: 0.22, bobFreq: 0.52 }],
-    [2.2, 2.6, 0.9,  P.white,    0.1,  0.6,  0.0, { ry: 0.08, rz: 0.0, bobFreq: 0.44 }],
-    [2.4, 2.2, 0.85, P.pink,    -2.4, -2.2, -0.5, { ry: 0.12, rz: 0.14, bobFreq: 0.39 }],
-    [2.0, 2.6, 0.8,  P.blue,     3.3,  0.5, -1.0, { ry: -0.18, rz: 0.06, bobFreq: 0.41 }],
-    [1.6, 1.8, 0.65, P.cyan,     2.6, -1.4,  0.3, { ry: -0.1, rz: -0.1, bobFreq: 0.58 }],
-    [1.8, 1.6, 0.7,  P.purple,   0.8, -3.0, -0.2, { ry: 0.05, rz: 0.04, bobFreq: 0.35 }],
-    [1.0, 1.2, 0.5,  P.red,     -0.6, -2.6,  0.6, { ry: -0.06, rz: 0.18, bobFreq: 0.62 }],
-    // Extra depth blocks
-    [1.4, 1.4, 0.6,  P.yellow,   5.0, -2.8, -1.5, { ry: 0.1, rz: -0.12, bobFreq: 0.48 }],
-    [1.2, 1.0, 0.5,  P.cyan,    -5.2,  2.8, -1.2, { ry: -0.08, rz: 0.15, bobFreq: 0.55 }],
-  ];
-  blockDefs.forEach(([w, h, d, col, x, y, z, opts]) => {
-    const b = makeBlock(w, h, d, col);
-    addFloater(b, x, y, z, opts);
-  });
+  // Blocks
+  [
+    [2.2, 3.0, 0.9, P.yellow, -3.8, 0.5, -1.2, { ry: 0.18, rz: -0.08, bobFreq: 0.36 }],
+    [1.7, 2.3, 0.8, P.orange, -2.0, -0.8, 0.5, { ry: -0.05, rz: 0.2, bobFreq: 0.5 }],
+    [2.4, 2.8, 1.0, P.white, 0.2, 0.7, 0.0, { ry: 0.06, bobFreq: 0.42 }],
+    [2.5, 2.3, 0.9, P.pink, -2.5, -2.4, -0.6, { ry: 0.1, rz: 0.12, bobFreq: 0.38 }],
+    [2.2, 2.8, 0.85, P.blue, 3.5, 0.6, -1.2, { ry: -0.16, rz: 0.05, bobFreq: 0.4 }],
+    [1.7, 1.9, 0.7, P.cyan, 2.8, -1.5, 0.4, { ry: -0.08, rz: -0.08, bobFreq: 0.56 }],
+    [1.9, 1.7, 0.75, P.purple, 0.9, -3.2, -0.3, { ry: 0.04, bobFreq: 0.34 }],
+    [1.1, 1.3, 0.55, P.red, -0.7, -2.8, 0.7, { ry: -0.05, rz: 0.16, bobFreq: 0.6 }],
+    [1.5, 1.5, 0.6, P.yellow, 5.2, -2.9, -1.6, { ry: 0.08, rz: -0.1, bobFreq: 0.46 }],
+    [1.3, 1.1, 0.5, P.cyan, -5.4, 3.0, -1.4, { ry: -0.06, rz: 0.12, bobFreq: 0.53 }],
+    [1.0, 0.8, 0.4, P.orange, 4.8, 3.2, -0.8, { ry: 0.12, bobFreq: 0.62 }],
+    [0.8, 1.6, 0.4, P.pink, -4.2, -3.8, -0.4, { rz: 0.2, bobFreq: 0.44 }],
+  ].forEach(([w,h,d,c,x,y,z,o]) => addF(makeBlock(w,h,d,c), x,y,z, o));
 
-  // Set initial rotations
-  floaters.forEach(f => {
-    f.mesh.rotation.set(f.initRot.x, f.initRot.y, f.initRot.z);
-  });
+  // Spray cans
+  [
+    [P.yellow, -6.0, 1.8, 0.6, { ry: 0.3, rz: 0.25, bobFreq: 0.41, bobAmp: 0.1 }],
+    [P.blue, 5.8, 1.6, 0.1, { ry: -0.3, rz: -0.2, bobFreq: 0.45, bobAmp: 0.1 }],
+    [P.pink, 4.6, -3.4, 0.4, { ry: 0.2, rz: 0.35, bobFreq: 0.53, bobAmp: 0.09 }],
+    [P.orange, -5.0, -2.8, 0.1, { ry: -0.12, rz: -0.22, bobFreq: 0.47, bobAmp: 0.11 }],
+    [P.cyan, -6.8, -0.6, 0.9, { ry: 0.35, rz: -0.12, bobFreq: 0.4, bobAmp: 0.08 }],
+    [P.purple, 6.5, -0.5, 0.2, { ry: -0.25, rz: 0.18, bobFreq: 0.5, bobAmp: 0.09 }],
+  ].forEach(([c,x,y,z,o]) => addF(makeSprayCan(c), x,y,z, o));
 
-  // ── SPRAY CANS ──
-  const canDefs = [
-    [P.yellow, -5.8, 1.6, 0.5,  { ry: 0.3, rz: 0.25, bobFreq: 0.43, bobAmp: 0.1 }],
-    [P.blue,    5.5, 1.4, 0.0,  { ry: -0.3, rz: -0.2, bobFreq: 0.47, bobAmp: 0.1 }],
-    [P.pink,    4.4,-3.2, 0.3,  { ry: 0.2, rz: 0.35, bobFreq: 0.55, bobAmp: 0.09 }],
-    [P.orange, -4.8,-2.6, 0.0,  { ry: -0.15, rz: -0.25, bobFreq: 0.49, bobAmp: 0.11 }],
-    [P.cyan,   -6.5, -0.5, 0.8, { ry: 0.4, rz: -0.15, bobFreq: 0.42, bobAmp: 0.08 }],
-  ];
-  canDefs.forEach(([col, x, y, z, opts]) => {
-    const can = makeSprayCan(col);
-    addFloater(can, x, y, z, opts);
-    can.rotation.set(opts.rx || 0, opts.ry || 0, opts.rz || 0);
-  });
+  // Stars
+  [
+    [-7.0, 3.4, 0.5, 5, 0.55, 0.22, P.black, false],
+    [6.4, 3.8, 0.5, 5, 0.45, 0.18, P.black, false],
+    [-6.0, -3.8, 0.5, 5, 0.65, 0.26, P.black, false],
+    [5.8, -3.4, 0.5, 5, 0.5, 0.2, P.black, false],
+    [-1.4, 4.4, 0.5, 5, 0.4, 0.16, P.black, false],
+    [2.4, -4.8, 0.5, 5, 0.48, 0.19, P.black, false],
+    [7.2, 0.6, 0.5, 4, 0.7, 0.28, P.yellow, true],
+    [-7.2, -1.0, 0.5, 4, 0.65, 0.26, P.pink, true],
+    [0.0, 5.2, 0.5, 6, 0.5, 0.2, P.orange, true],
+    [-3.5, 4.8, 0.5, 5, 0.35, 0.14, P.cyan, true],
+  ].forEach(([x,y,z,pts,or,ir,c,t]) => addF(makeStar(pts,or,ir,c,t), x,y,z, { bobFreq: 0.5 + Math.random() * 0.3, bobAmp: 0.06, rotZ: (Math.random() - 0.5) * 0.012 }));
 
-  // ── STARS ──
-  const starData = [
-    [-6.8,  3.2, 0.5, 5, 0.55, 0.22, P.black, false],
-    [ 6.2,  3.6, 0.5, 5, 0.45, 0.18, P.black, false],
-    [-5.8, -3.6, 0.5, 5, 0.65, 0.26, P.black, false],
-    [ 5.6, -3.2, 0.5, 5, 0.50, 0.20, P.black, false],
-    [-1.2,  4.2, 0.5, 5, 0.40, 0.16, P.black, false],
-    [ 2.2, -4.6, 0.5, 5, 0.48, 0.19, P.black, false],
-    [ 7.0,  0.5, 0.5, 4, 0.70, 0.28, P.yellow, true],
-    [-7.0, -0.8, 0.5, 4, 0.65, 0.26, P.pink, true],
-    [ 0.0,  5.0, 0.5, 6, 0.50, 0.20, P.orange, true],
-  ];
-  starData.forEach(([x, y, z, pts, or, ir, col, thick]) => {
-    const s = makeStar(pts, or, ir, col, thick);
-    addFloater(s, x, y, z, {
-      bobFreq: 0.55 + Math.random() * 0.3,
-      bobAmp: 0.06,
-      rotZ: (Math.random() - 0.5) * 0.015,
-    });
-  });
+  // Arrows
+  addF(makeArrow(P.pink, 0.85), -7.4, 1.4, 0.3, { rz: 0.3, bobFreq: 0.48, bobAmp: 0.07 });
+  addF(makeArrow(P.orange, 0.65), 7.0, -1.6, 0.2, { rz: -0.5, bobFreq: 0.43, bobAmp: 0.06 });
+  addF(makeArrow(P.cyan, 0.5), -3.0, 5.0, 0.4, { rz: 1.2, bobFreq: 0.55, bobAmp: 0.05 });
 
-  // ── ARROWS ──
-  const arr1 = makeArrow(P.pink, 0.8);
-  addFloater(arr1, -7.2, 1.2, 0.3, { bobFreq: 0.5, bobAmp: 0.07, rz: 0.3 });
-  arr1.rotation.z = 0.3;
+  // Bolts
+  addF(makeBolt(P.yellow, 1.2), 3.5, 4.5, 0.3, { rz: -0.2, bobFreq: 0.6, bobAmp: 0.05 });
+  addF(makeBolt(P.pink, 0.9), -5.5, 4.2, 0.2, { rz: 0.3, bobFreq: 0.52, bobAmp: 0.04 });
 
-  const arr2 = makeArrow(P.orange, 0.6);
-  addFloater(arr2, 6.8, -1.5, 0.2, { bobFreq: 0.45, bobAmp: 0.06, rz: -0.5 });
-  arr2.rotation.z = -0.5;
+  // Drips
+  [
+    [-4.0, 4.8, 0, P.orange, 0.75], [-2.4, 4.5, 0.1, P.pink, 0.95],
+    [0.6, 4.7, 0, P.blue, 0.65], [3.2, 4.6, 0.1, P.cyan, 0.85],
+    [5.2, 4.8, 0, P.yellow, 0.7], [-5.8, 4.9, 0, P.purple, 0.7],
+    [6.8, 4.7, 0, P.red, 0.8], [-0.8, 4.4, 0, P.orange, 0.6],
+  ].forEach(([x,y,z,c,l]) => addF(makeDrip(c,l), x,y,z, { bobFreq: 0.3 + Math.random() * 0.2, bobAmp: 0.04 }));
 
-  // ── PAINT DRIPS ──
-  const dripData = [
-    [-3.8, 4.5, 0.0, P.orange, 0.7],
-    [-2.2, 4.2, 0.1, P.pink,   0.9],
-    [ 0.5, 4.4, 0.0, P.blue,   0.6],
-    [ 3.0, 4.3, 0.1, P.cyan,   0.8],
-    [ 5.0, 4.5, 0.0, P.yellow, 0.7],
-    [-5.5, 4.6, 0.0, P.purple, 0.65],
-    [ 6.5, 4.4, 0.0, P.red,    0.75],
-  ];
-  dripData.forEach(([x, y, z, col, len]) => {
-    const d = makeDrip(col, len);
-    addFloater(d, x, y, z, { bobFreq: 0.3 + Math.random() * 0.2, bobAmp: 0.04 });
-  });
-
-  // ── PAINT PARTICLES ──
-  const PARTICLE_COUNT = 350;
+  // ── PARTICLES ──
+  const PCOUNT = 400;
   const pGeo = new THREE.BufferGeometry();
-  const pPos = new Float32Array(PARTICLE_COUNT * 3);
-  const pCol = new Float32Array(PARTICLE_COUNT * 3);
+  const pPos = new Float32Array(PCOUNT * 3);
+  const pCol = new Float32Array(PCOUNT * 3);
   const pSpeeds = [], pPhases = [], pDrift = [];
   const pColorObjs = ACCENTS.map(c => new THREE.Color(c));
-
-  for (let i = 0; i < PARTICLE_COUNT; i++) {
-    pPos[i*3]   = (Math.random() - 0.5) * 20;
-    pPos[i*3+1] = (Math.random() - 0.5) * 14;
-    pPos[i*3+2] = (Math.random() - 0.5) * 6 - 2;
-    const c = pColorObjs[Math.floor(Math.random() * pColorObjs.length)];
-    pCol[i*3] = c.r; pCol[i*3+1] = c.g; pCol[i*3+2] = c.b;
-    pSpeeds.push(0.002 + Math.random() * 0.005);
-    pPhases.push(Math.random() * Math.PI * 2);
-    pDrift.push((Math.random() - 0.5) * 0.001);
+  for (let i = 0; i < PCOUNT; i++) {
+    pPos[i*3] = (Math.random()-0.5)*22;
+    pPos[i*3+1] = (Math.random()-0.5)*16;
+    pPos[i*3+2] = (Math.random()-0.5)*8 - 2;
+    const c = pColorObjs[~~(Math.random()*pColorObjs.length)];
+    pCol[i*3]=c.r; pCol[i*3+1]=c.g; pCol[i*3+2]=c.b;
+    pSpeeds.push(0.002+Math.random()*0.006);
+    pPhases.push(Math.random()*Math.PI*2);
+    pDrift.push((Math.random()-0.5)*0.0012);
   }
-  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-  pGeo.setAttribute('color',    new THREE.BufferAttribute(pCol, 3));
-
-  const pMat = new THREE.PointsMaterial({
-    size: 0.14, vertexColors: true,
-    transparent: true, opacity: 0.85,
-    sizeAttenuation: true,
-  });
-  const particles = new THREE.Points(pGeo, pMat);
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos,3));
+  pGeo.setAttribute('color', new THREE.BufferAttribute(pCol,3));
+  const particles = new THREE.Points(pGeo, new THREE.PointsMaterial({
+    size: 0.13, vertexColors: true, transparent: true, opacity: 0.85, sizeAttenuation: true,
+  }));
   root.add(particles);
 
   // ============================================================
-  //  HERO INTRO ANIMATIONS (triggered after loader)
+  //  SCROLL-DRIVEN ANIMATIONS (GSAP ScrollTrigger)
   // ============================================================
-  function startHeroAnimations() {
-    // Blocks fly in
+
+  // Proxy values driven by scroll
+  const scrollProxy = { bgHue: 0, sceneRotY: 0, camZ: 14, fogDensity: 0.018 };
+
+  function startIntro() {
+    // ── Fly-in animation ──
     floaters.forEach((f, i) => {
       gsap.from(f.mesh.position, {
-        z: f.mesh.position.z - 22,
-        duration: 1.6,
-        delay: 0.08 + i * 0.035,
-        ease: 'power4.out',
+        z: f.mesh.position.z - 24, duration: 1.8,
+        delay: 0.06 + i * 0.03, ease: 'power4.out',
       });
       gsap.from(f.mesh.scale, {
-        x: 0.01, y: 0.01, z: 0.01,
-        duration: 1.2,
-        delay: 0.08 + i * 0.035,
-        ease: 'back.out(1.8)',
+        x: 0.01, y: 0.01, z: 0.01, duration: 1.3,
+        delay: 0.06 + i * 0.03, ease: 'back.out(1.6)',
+      });
+    });
+    gsap.from(camera.position, { z: 26, duration: 2.2, ease: 'power3.out' });
+
+    // ── UI stagger ──
+    gsap.to('.eyebrow', { opacity: 1, y: 0, duration: 0.7, delay: 0.7, ease: 'power2.out' });
+    gsap.to('.hero-title', { opacity: 1, scale: 1, rotation: 0, duration: 1, delay: 0.9, ease: 'back.out(1.3)' });
+    gsap.to('.hero-sub', { opacity: 1, y: 0, duration: 0.7, delay: 1.3, ease: 'power2.out' });
+    gsap.to('.cta-row', { opacity: 1, y: 0, duration: 0.7, delay: 1.6, ease: 'power2.out' });
+    gsap.to('#tags', { opacity: 1, duration: 0.7, delay: 2.0, ease: 'power2.out' });
+
+    // ── SCROLL TRIGGERS ──
+    // 1. Hero -> scene rotates, camera pulls back, BG shifts
+    gsap.to(scrollProxy, {
+      sceneRotY: 0.5, camZ: 20, fogDensity: 0.035,
+      scrollTrigger: {
+        trigger: '#about', start: 'top bottom', end: 'top top',
+        scrub: 1.5,
+      }
+    });
+
+    // 2. About cards stagger in
+    gsap.utils.toArray('.about-card').forEach((card, i) => {
+      gsap.to(card, {
+        opacity: 1, y: 0, duration: 0.8, delay: i * 0.15,
+        ease: 'back.out(1.4)',
+        scrollTrigger: { trigger: card, start: 'top 85%', toggleActions: 'play none none reverse' },
       });
     });
 
-    // Camera zoom in
-    gsap.from(camera.position, {
-      z: 24, duration: 2.0, ease: 'power3.out',
+    // 3. Section titles
+    gsap.utils.toArray('.section-title').forEach(title => {
+      gsap.to(title, {
+        opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+        scrollTrigger: { trigger: title, start: 'top 85%', toggleActions: 'play none none reverse' },
+      });
     });
 
-    // UI elements stagger in
-    gsap.to('.eyebrow', {
-      opacity: 1, y: 0, duration: 0.6, delay: 0.6, ease: 'power2.out',
+    // 4. Stats counter
+    gsap.utils.toArray('.stat').forEach((stat, i) => {
+      gsap.to(stat, {
+        opacity: 1, y: 0, duration: 0.6, delay: i * 0.1,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '.stats-bar', start: 'top 85%',
+          toggleActions: 'play none none reverse',
+          onEnter: () => animateCount(stat.querySelector('.stat-num')),
+        },
+      });
     });
-    gsap.to('.hero-title', {
-      opacity: 1, scale: 1, rotation: 0, duration: 0.9, delay: 0.8,
-      ease: 'back.out(1.4)',
+
+    // 5. Gallery horizontal scroll
+    const strip = document.getElementById('gallery-strip');
+    if (strip) {
+      const totalScroll = strip.scrollWidth - window.innerWidth + 100;
+      gsap.to(strip, {
+        x: -totalScroll,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '#gallery', start: 'top top', end: '+=' + totalScroll,
+          scrub: 1, pin: true, anticipatePin: 1,
+        },
+      });
+    }
+
+    // 6. Hide tags on scroll past hero
+    ScrollTrigger.create({
+      trigger: '#about', start: 'top 80%',
+      onEnter: () => document.getElementById('tags').classList.add('hidden'),
+      onLeaveBack: () => document.getElementById('tags').classList.remove('hidden'),
     });
-    gsap.to('.hero-sub', {
-      opacity: 1, y: 0, duration: 0.6, delay: 1.2, ease: 'power2.out',
+
+    // 7. Nav appearance
+    ScrollTrigger.create({
+      trigger: '#about', start: 'top 60%',
+      onEnter: () => document.getElementById('nav').classList.add('scrolled'),
+      onLeaveBack: () => document.getElementById('nav').classList.remove('scrolled'),
     });
-    gsap.to('.cta-row', {
-      opacity: 1, y: 0, duration: 0.6, delay: 1.5, ease: 'power2.out',
-    });
-    gsap.to('#tags', {
-      opacity: 1, duration: 0.6, delay: 1.8, ease: 'power2.out',
-    });
-    gsap.to('#scroll-hint', {
-      opacity: 0.6, duration: 0.6, delay: 2.4, ease: 'power2.out',
+  }
+
+  // ── COUNT ANIMATION ──
+  function animateCount(el) {
+    if (!el || el.dataset.animated) return;
+    el.dataset.animated = '1';
+    const target = parseInt(el.dataset.count, 10);
+    gsap.to({ val: 0 }, {
+      val: target, duration: 1.5, ease: 'power2.out',
+      onUpdate: function() { el.textContent = Math.round(this.targets()[0].val); },
     });
   }
 
   // ============================================================
-  //  MOUSE PARALLAX & CURSOR
+  //  GALLERY CANVAS MINI-SCENES
   // ============================================================
-  const mouse = { x: 0, y: 0, px: 0, py: 0 };
+  function initGalleryCanvases() {
+    const configs = [
+      { id: 'gal-c1', bg: '#1B4FA8', shapes: 'blocks' },
+      { id: 'gal-c2', bg: '#0A0A0A', shapes: 'arcs' },
+      { id: 'gal-c3', bg: '#8B5BB8', shapes: 'stars' },
+      { id: 'gal-c4', bg: '#FF1F8E', shapes: 'drips' },
+      { id: 'gal-c5', bg: '#7DC820', shapes: 'dots' },
+    ];
+    configs.forEach(cfg => {
+      const canvas = document.getElementById(cfg.id);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width * 2;
+      canvas.height = rect.height * 2;
+      ctx.scale(2, 2);
+      const w = rect.width, h = rect.height;
+      ctx.fillStyle = cfg.bg;
+      ctx.fillRect(0, 0, w, h);
+
+      if (cfg.shapes === 'blocks') {
+        for (let i = 0; i < 12; i++) {
+          ctx.fillStyle = CSS_COLORS[~~(Math.random()*CSS_COLORS.length)];
+          const bw = 30 + Math.random() * 60, bh = 40 + Math.random() * 80;
+          const bx = Math.random() * (w - bw), by = Math.random() * (h - bh);
+          ctx.save();
+          ctx.translate(bx + bw/2, by + bh/2);
+          ctx.rotate((Math.random() - 0.5) * 0.3);
+          ctx.fillRect(-bw/2, -bh/2, bw, bh);
+          ctx.strokeStyle = '#0A0A0A'; ctx.lineWidth = 3;
+          ctx.strokeRect(-bw/2, -bh/2, bw, bh);
+          ctx.restore();
+        }
+      } else if (cfg.shapes === 'arcs') {
+        for (let i = 0; i < 8; i++) {
+          ctx.strokeStyle = CSS_COLORS[~~(Math.random()*CSS_COLORS.length)];
+          ctx.lineWidth = 4 + Math.random() * 8;
+          ctx.beginPath();
+          ctx.arc(w/2 + (Math.random()-0.5)*60, h/2 + (Math.random()-0.5)*60,
+            30 + Math.random() * 80, Math.random() * Math.PI, Math.random() * Math.PI * 2);
+          ctx.stroke();
+        }
+      } else if (cfg.shapes === 'stars') {
+        for (let i = 0; i < 10; i++) {
+          drawStar2D(ctx, Math.random()*w, Math.random()*h, 5, 8+Math.random()*20, 4+Math.random()*8,
+            CSS_COLORS[~~(Math.random()*CSS_COLORS.length)]);
+        }
+      } else if (cfg.shapes === 'drips') {
+        for (let i = 0; i < 15; i++) {
+          ctx.fillStyle = CSS_COLORS[~~(Math.random()*CSS_COLORS.length)];
+          const dx = Math.random() * w, dw = 6 + Math.random() * 10;
+          const dh = 40 + Math.random() * 120;
+          ctx.beginPath();
+          ctx.roundRect(dx, 0, dw, dh, [0, 0, dw/2, dw/2]);
+          ctx.fill();
+          ctx.strokeStyle = '#0A0A0A'; ctx.lineWidth = 2; ctx.stroke();
+        }
+      } else {
+        for (let i = 0; i < 60; i++) {
+          ctx.fillStyle = CSS_COLORS[~~(Math.random()*CSS_COLORS.length)];
+          ctx.beginPath();
+          ctx.arc(Math.random()*w, Math.random()*h, 2+Math.random()*8, 0, Math.PI*2);
+          ctx.fill();
+        }
+      }
+    });
+  }
+
+  function drawStar2D(ctx, cx, cy, pts, outerR, innerR, color) {
+    ctx.fillStyle = color;
+    ctx.strokeStyle = '#0A0A0A';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let i = 0; i < pts * 2; i++) {
+      const a = (i * Math.PI) / pts - Math.PI / 2;
+      const r = i % 2 === 0 ? outerR : innerR;
+      i === 0 ? ctx.moveTo(cx + Math.cos(a)*r, cy + Math.sin(a)*r) : ctx.lineTo(cx + Math.cos(a)*r, cy + Math.sin(a)*r);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  }
+
+  setTimeout(initGalleryCanvases, 100);
+
+  // ============================================================
+  //  MOUSE & CURSOR
+  // ============================================================
+  const mouse = { x: 0, y: 0, px: W()/2, py: H()/2 };
   const smoothRot = { x: 0, y: 0 };
   const cursor = document.getElementById('cursor');
   const cursorTrail = document.getElementById('cursor-trail');
+  let trailX = W()/2, trailY = H()/2;
 
-  window.addEventListener('mousemove', (e) => {
+  window.addEventListener('mousemove', e => {
     mouse.x = (e.clientX / W() - 0.5) * 2;
     mouse.y = -(e.clientY / H() - 0.5) * 2;
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top  = e.clientY + 'px';
-    // Trail follows with lerp (handled in RAF)
     mouse.px = e.clientX;
     mouse.py = e.clientY;
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
   });
 
-  // Trail position (lerped)
-  let trailX = W() / 2, trailY = H() / 2;
-
-  // ── CLICK SPRAY EFFECT ──
-  const sprayColors = ['#FF1F8E','#FFD700','#29A8D0','#FF8C00','#8B5BB8','#7DC820'];
-  window.addEventListener('click', (e) => {
-    for (let i = 0; i < 12; i++) {
+  // Click spray
+  window.addEventListener('click', e => {
+    for (let i = 0; i < 14; i++) {
       const dot = document.createElement('div');
       dot.className = 'spray-dot';
-      dot.style.background = sprayColors[Math.floor(Math.random() * sprayColors.length)];
+      dot.style.background = CSS_COLORS[~~(Math.random()*CSS_COLORS.length)];
       const angle = Math.random() * Math.PI * 2;
-      const dist = 20 + Math.random() * 60;
-      dot.style.left = (e.clientX + Math.cos(angle) * dist) + 'px';
-      dot.style.top  = (e.clientY + Math.sin(angle) * dist) + 'px';
-      dot.style.width = (3 + Math.random() * 8) + 'px';
-      dot.style.height = dot.style.width;
+      const dist = 15 + Math.random() * 70;
+      dot.style.left = (e.clientX + Math.cos(angle)*dist) + 'px';
+      dot.style.top = (e.clientY + Math.sin(angle)*dist) + 'px';
+      const sz = (3 + Math.random() * 10) + 'px';
+      dot.style.width = sz; dot.style.height = sz;
       document.body.appendChild(dot);
-      setTimeout(() => dot.remove(), 800);
+      setTimeout(() => dot.remove(), 1000);
     }
   });
 
-  // ── SCROLL ZOOM (mousewheel interaction) ──
-  let scrollTarget = 13;
-  const SCROLL_MIN = 8;
-  const SCROLL_MAX = 18;
-  window.addEventListener('wheel', (e) => {
-    scrollTarget += e.deltaY * 0.005;
-    scrollTarget = Math.max(SCROLL_MIN, Math.min(SCROLL_MAX, scrollTarget));
+  // Scroll zoom
+  let scrollZoomTarget = 14;
+  window.addEventListener('wheel', e => {
+    if (ScrollTrigger.isInViewport(document.getElementById('hero'), 0.5)) {
+      scrollZoomTarget += e.deltaY * 0.004;
+      scrollZoomTarget = Math.max(9, Math.min(19, scrollZoomTarget));
+    }
+  }, { passive: true });
+
+  // Cursor hover states
+  document.querySelectorAll('.btn, .tag, .nav-links a, .footer-links a, .gal-item').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '44px'; cursor.style.height = '44px';
+      cursor.style.background = '#FFD700';
+      cursorTrail.style.width = '64px'; cursorTrail.style.height = '64px';
+      cursorTrail.style.borderColor = '#FFD700';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '16px'; cursor.style.height = '16px';
+      cursor.style.background = '#FF1F8E';
+      cursorTrail.style.width = '40px'; cursorTrail.style.height = '40px';
+      cursorTrail.style.borderColor = '#FF1F8E';
+    });
   });
+
+  // ============================================================
+  //  SCROLL PROGRESS BAR
+  // ============================================================
+  const progressBar = document.getElementById('scroll-progress');
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    progressBar.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
+  }, { passive: true });
 
   // ============================================================
   //  RENDER LOOP
   // ============================================================
   const clock = new THREE.Clock();
+  const bgColor = new THREE.Color(P.bg);
 
   function animate() {
     requestAnimationFrame(animate);
     const t = clock.getElapsedTime();
 
-    // Float each object
+    // Bob floaters
     floaters.forEach(f => {
-      const bob = Math.sin(t * f.bobFreq + f.bobPhase) * f.bobAmp;
-      f.mesh.position.y = f.initPos.y + bob;
-      if (f.rotY !== 0) f.mesh.rotation.y += f.rotY * 0.01;
-      if (f.rotZ !== 0) f.mesh.rotation.z += f.rotZ * 0.01;
-      if (f.rotX !== 0) f.mesh.rotation.x += f.rotX * 0.01;
+      f.mesh.position.y = f.initPos.y + Math.sin(t * f.bobFreq + f.bobPhase) * f.bobAmp;
+      if (f.rotY) f.mesh.rotation.y += f.rotY * 0.008;
+      if (f.rotZ) f.mesh.rotation.z += f.rotZ * 0.008;
+      if (f.rotX) f.mesh.rotation.x += f.rotX * 0.008;
     });
 
-    // Drift particles upward
+    // Particles
     const pa = pGeo.attributes.position.array;
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
+    for (let i = 0; i < PCOUNT; i++) {
       pa[i*3+1] += pSpeeds[i];
-      pa[i*3]   += Math.sin(t * 0.5 + pPhases[i]) * pDrift[i];
-      if (pa[i*3+1] > 8) pa[i*3+1] = -8;
+      pa[i*3] += Math.sin(t * 0.5 + pPhases[i]) * pDrift[i];
+      if (pa[i*3+1] > 9) pa[i*3+1] = -9;
     }
     pGeo.attributes.position.needsUpdate = true;
 
-    // Smooth mouse parallax
-    smoothRot.x += (mouse.y * 0.18 - smoothRot.x) * 0.04;
-    smoothRot.y += (mouse.x * 0.26 - smoothRot.y) * 0.04;
+    // Mouse parallax
+    smoothRot.x += (mouse.y * 0.15 - smoothRot.x) * 0.035;
+    smoothRot.y += (mouse.x * 0.22 - smoothRot.y) * 0.035;
     root.rotation.x = smoothRot.x;
-    root.rotation.y = smoothRot.y;
+    root.rotation.y = smoothRot.y + scrollProxy.sceneRotY;
 
-    // Camera drift + scroll zoom
-    camera.position.x = Math.sin(t * 0.07) * 0.25;
-    camera.position.y = 0.5 + Math.cos(t * 0.05) * 0.15;
-    camera.position.z += (scrollTarget - camera.position.z) * 0.06;
+    // Camera
+    camera.position.x = Math.sin(t * 0.06) * 0.2;
+    camera.position.y = 0.5 + Math.cos(t * 0.04) * 0.12;
+    const targetZ = Math.max(scrollProxy.camZ, scrollZoomTarget);
+    camera.position.z += (targetZ - camera.position.z) * 0.05;
 
-    // Animate point lights
-    ptLight1.position.x = -5 + Math.sin(t * 0.3) * 2;
-    ptLight2.position.x =  5 + Math.cos(t * 0.25) * 2;
+    // Fog from scroll
+    scene.fog.density += (scrollProxy.fogDensity - scene.fog.density) * 0.05;
 
-    // Update cursor trail
-    trailX += (mouse.px - trailX) * 0.12;
-    trailY += (mouse.py - trailY) * 0.12;
+    // Animate lights
+    ptL1.position.x = -6 + Math.sin(t * 0.25) * 2.5;
+    ptL1.position.y = 4 + Math.cos(t * 0.3) * 1.5;
+    ptL2.position.x = 6 + Math.cos(t * 0.2) * 2.5;
+    ptL3.position.y = 6 + Math.sin(t * 0.15) * 2;
+
+    // Cursor trail
+    trailX += (mouse.px - trailX) * 0.1;
+    trailY += (mouse.py - trailY) * 0.1;
     cursorTrail.style.left = trailX + 'px';
-    cursorTrail.style.top  = trailY + 'px';
+    cursorTrail.style.top = trailY + 'px';
 
     renderer.render(scene, camera);
   }
   animate();
 
-  // ============================================================
-  //  RESIZE
-  // ============================================================
+  // ── RESIZE ──
   window.addEventListener('resize', () => {
     camera.aspect = W() / H();
     camera.updateProjectionMatrix();
     renderer.setSize(W(), H());
-  });
-
-  // ── CURSOR STYLE ON INTERACTIVE ELEMENTS ──
-  document.querySelectorAll('.btn, .tag').forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      cursor.style.width = '40px';
-      cursor.style.height = '40px';
-      cursor.style.background = '#FFD700';
-      cursorTrail.style.width = '60px';
-      cursorTrail.style.height = '60px';
-      cursorTrail.style.borderColor = '#FFD700';
-    });
-    el.addEventListener('mouseleave', () => {
-      cursor.style.width = '18px';
-      cursor.style.height = '18px';
-      cursor.style.background = '#FF1F8E';
-      cursorTrail.style.width = '36px';
-      cursorTrail.style.height = '36px';
-      cursorTrail.style.borderColor = '#FF1F8E';
-    });
+    ScrollTrigger.refresh();
   });
 })();
 </script>
