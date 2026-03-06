@@ -415,6 +415,131 @@
     opacity: 0.85;
   }
 
+  /* ── STORIES SECTION ── */
+  #stories {
+    background: linear-gradient(180deg, transparent 0%, rgba(10,10,10,0.9) 15%, var(--black) 100%);
+    padding: 80px 24px 100px;
+  }
+  .stories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 32px;
+    max-width: 1100px;
+    width: 100%;
+  }
+  .story-card {
+    background: rgba(255,255,255,0.03);
+    border: 3px solid var(--black);
+    box-shadow: var(--shadow-lg);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(40px) rotate(0.5deg);
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s;
+  }
+  .story-card:nth-child(even) { transform: translateY(40px) rotate(-0.5deg); }
+  .story-card:hover {
+    transform: translateY(-6px) rotate(-1deg) !important;
+    box-shadow: 10px 10px 0 var(--black);
+  }
+  .story-header {
+    padding: 20px 24px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 3px solid rgba(255,255,255,0.06);
+  }
+  .story-avatar {
+    width: 48px; height: 48px;
+    border: 3px solid var(--black);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-family: 'Black Han Sans', sans-serif;
+    flex-shrink: 0;
+  }
+  .story-card:nth-child(1) .story-avatar { background: var(--pink); color: var(--white); }
+  .story-card:nth-child(2) .story-avatar { background: var(--cyan); color: var(--black); }
+  .story-card:nth-child(3) .story-avatar { background: var(--yellow); color: var(--black); }
+  .story-card:nth-child(4) .story-avatar { background: var(--orange); color: var(--black); }
+  .story-card:nth-child(5) .story-avatar { background: var(--purple); color: var(--white); }
+  .story-card:nth-child(6) .story-avatar { background: var(--red); color: var(--white); }
+  .story-meta {
+    flex: 1;
+  }
+  .story-writer {
+    font-size: clamp(14px, 1.5vw, 18px);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--white);
+  }
+  .story-crew {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-top: 2px;
+  }
+  .story-body {
+    padding: 20px 24px 24px;
+  }
+  .story-title {
+    font-size: clamp(16px, 2vw, 22px);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  .story-card:nth-child(1) .story-title { color: var(--pink); }
+  .story-card:nth-child(2) .story-title { color: var(--cyan); }
+  .story-card:nth-child(3) .story-title { color: var(--yellow); }
+  .story-card:nth-child(4) .story-title { color: var(--orange); }
+  .story-card:nth-child(5) .story-title { color: var(--purple); }
+  .story-card:nth-child(6) .story-title { color: var(--red); }
+  .story-text {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 400;
+    font-size: clamp(13px, 1.2vw, 15px);
+    line-height: 1.7;
+    color: rgba(245,245,245,0.65);
+    letter-spacing: 0.03em;
+  }
+  .story-footer {
+    padding: 12px 24px;
+    border-top: 2px solid rgba(255,255,255,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .story-tags {
+    display: flex;
+    gap: 8px;
+  }
+  .story-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(245,245,245,0.4);
+  }
+  .story-date {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: rgba(245,245,245,0.25);
+  }
+  @media (max-width: 768px) {
+    .stories-grid { grid-template-columns: 1fr; gap: 20px; }
+    .story-card { transform: translateY(40px) rotate(0deg); }
+    .story-card:nth-child(even) { transform: translateY(40px) rotate(0deg); }
+  }
+
   /* ── FOOTER ── */
   #footer {
     min-height: auto;
@@ -695,6 +820,7 @@
     <li><a href="#hero">Home</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#stories">Stories</a></li>
   </ul>
 </nav>
 
@@ -773,6 +899,122 @@
     </div>
   </section>
 
+  <!-- ── SECTION 4: STORIES ── -->
+  <section class="section" id="stories">
+    <h2 class="section-title">Stories From The Wall</h2>
+    <div class="stories-grid">
+
+      <div class="story-card">
+        <div class="story-header">
+          <div class="story-avatar">CB</div>
+          <div class="story-meta">
+            <div class="story-writer">Cornbread Jr.</div>
+            <div class="story-crew">ZOO CREW &middot; Philly</div>
+          </div>
+        </div>
+        <div class="story-body">
+          <h3 class="story-title">The Elephant Incident</h3>
+          <p class="story-text">My grandpa tagged an actual elephant at the Philadelphia Zoo in '67. The elephant reportedly loved it. The zookeeper did not. Grandpa says the elephant trumpeted in approval. The judge was less enthusiastic. Family tradition now: we only tag animals that weigh over 4 tons. It's a very specific rule.</p>
+        </div>
+        <div class="story-footer">
+          <div class="story-tags"><span class="story-tag">Legend</span><span class="story-tag">Zoo</span></div>
+          <div class="story-date">1967</div>
+        </div>
+      </div>
+
+      <div class="story-card">
+        <div class="story-header">
+          <div class="story-avatar">99</div>
+          <div class="story-meta">
+            <div class="story-writer">PixelGhost99</div>
+            <div class="story-crew">404 CREW &middot; Internet</div>
+          </div>
+        </div>
+        <div class="story-body">
+          <h3 class="story-title">I Hate You: A Love Story</h3>
+          <p class="story-text">Sprayed "I HATE YOU" on a highway overpass. Drove 2 miles. Got inspired again. Sprayed "I STILL HATE YOU." Someone added "WHO HURT YOU?" underneath. Then someone else wrote "KAREN." Became the most visited overpass in New Jersey. They made it a historical landmark. I'm technically a civil engineer now.</p>
+        </div>
+        <div class="story-footer">
+          <div class="story-tags"><span class="story-tag">Highway</span><span class="story-tag">Drama</span></div>
+          <div class="story-date">2019</div>
+        </div>
+      </div>
+
+      <div class="story-card">
+        <div class="story-header">
+          <div class="story-avatar">SA</div>
+          <div class="story-meta">
+            <div class="story-writer">SatelliteSaber</div>
+            <div class="story-crew">MSK &middot; Los Angeles</div>
+          </div>
+        </div>
+        <div class="story-body">
+          <h3 class="story-title">Visible From Space</h3>
+          <p class="story-text">Painted a piece on the LA river bank so large it showed up on Google Earth. My mom found it while looking for directions to Target. Called me screaming. Not because I'm a vandal. Because the letter spacing was off. "Your S is too close to the A!" Mom, it's 250 feet wide. "EXACTLY. No excuses at that scale."</p>
+        </div>
+        <div class="story-footer">
+          <div class="story-tags"><span class="story-tag">Satellite</span><span class="story-tag">Mom</span></div>
+          <div class="story-date">2003</div>
+        </div>
+      </div>
+
+      <div class="story-card">
+        <div class="story-header">
+          <div class="story-avatar">1K</div>
+          <div class="story-meta">
+            <div class="story-writer">PanelKing</div>
+            <div class="story-crew">1000 CLUB &middot; Berlin</div>
+          </div>
+        </div>
+        <div class="story-body">
+          <h3 class="story-title">1000 Panels, 1000 Days</h3>
+          <p class="story-text">Set out to paint 1000 train panels in 1000 days. Day 847: realized I'd been painting the same train. It's a short loop. The conductor started waving at me. By day 900 he was bringing me coffee. Day 1000: he asked me to be his best man. I said yes. The wedding invitations were hand-buffed.</p>
+        </div>
+        <div class="story-footer">
+          <div class="story-tags"><span class="story-tag">Trains</span><span class="story-tag">Romance</span></div>
+          <div class="story-date">2015</div>
+        </div>
+      </div>
+
+      <div class="story-card">
+        <div class="story-header">
+          <div class="story-avatar">BR</div>
+          <div class="story-meta">
+            <div class="story-writer">BathroomBard</div>
+            <div class="story-crew">STALL WRITERS &middot; Everywhere</div>
+          </div>
+        </div>
+        <div class="story-body">
+          <h3 class="story-title">The Poetic Throne</h3>
+          <p class="story-text">Started writing poetry in bathroom stalls. First piece: "Here I sit on the pooper, giving birth to a state trooper." Won a Pushcart Prize nomination. Just kidding. But the janitor at Denny's started a whole literary magazine from stall #3. It's called "Flush Fiction." Six issues strong. Only available in restrooms. Five stars on Yelp.</p>
+        </div>
+        <div class="story-footer">
+          <div class="story-tags"><span class="story-tag">Poetry</span><span class="story-tag">Bathroom</span></div>
+          <div class="story-date">2021</div>
+        </div>
+      </div>
+
+      <div class="story-card">
+        <div class="story-header">
+          <div class="story-avatar">AI</div>
+          <div class="story-meta">
+            <div class="story-writer">NeuralSpray</div>
+            <div class="story-crew">CTRL+Z CREW &middot; The Cloud</div>
+          </div>
+        </div>
+        <div class="story-body">
+          <h3 class="story-title">The Bot That Bombed</h3>
+          <p class="story-text">Trained an AI to generate graffiti tags. First output: "HELLO WORLD" in Comic Sans. Threw the laptop off a bridge. Fished it out. Tried again. It generated "PLEASE DO NOT VANDALIZE." I have created the world's first snitch algorithm. The cops love it. My crew disowned me. The AI now works in code review.</p>
+        </div>
+        <div class="story-footer">
+          <div class="story-tags"><span class="story-tag">AI</span><span class="story-tag">Betrayal</span></div>
+          <div class="story-date">2025</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
   <!-- ── FOOTER ── -->
   <footer class="section" id="footer">
     <div class="footer-inner">
@@ -781,6 +1023,7 @@
         <li><a href="#hero">Top</a></li>
         <li><a href="#about">About</a></li>
         <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#stories">Stories</a></li>
       </ul>
       <div class="footer-copy">A portfolio experiment &middot; 2025</div>
     </div>
@@ -1174,7 +1417,16 @@
       });
     }
 
-    // 6. Hide tags on scroll past hero
+    // 6. Story cards stagger in
+    gsap.utils.toArray('.story-card').forEach((card, i) => {
+      gsap.to(card, {
+        opacity: 1, y: 0, rotation: 0, duration: 0.9, delay: i * 0.1,
+        ease: 'back.out(1.3)',
+        scrollTrigger: { trigger: card, start: 'top 88%', toggleActions: 'play none none reverse' },
+      });
+    });
+
+    // 7. Hide tags on scroll past hero
     ScrollTrigger.create({
       trigger: '#about', start: 'top 80%',
       onEnter: () => document.getElementById('tags').classList.add('hidden'),
