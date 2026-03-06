@@ -329,6 +329,16 @@
     opacity: 0;
     transform: translateY(30px);
   }
+  .about-intro {
+    max-width: 680px;
+    margin: -20px auto 48px;
+    text-align: center;
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(16px, 2.5vw, 20px);
+    color: rgba(245,245,245,0.85);
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+  }
 
   /* ── GALLERY SECTION (Section 3) ── */
   #gallery {
@@ -689,7 +699,7 @@
     font-size: 10px;
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: rgba(245,245,245,0.35);
+    color: rgba(245,245,245,0.55);
     margin-bottom: 16px;
   }
   .tech-stack-badges {
@@ -955,7 +965,7 @@
     font-family: 'Space Mono', monospace;
     font-size: 11px;
     letter-spacing: 0.15em;
-    color: rgba(245,245,245,0.35);
+    color: rgba(245,245,245,0.55);
     margin-top: 20px;
     text-align: center;
     text-transform: uppercase;
@@ -1042,7 +1052,7 @@
     font-family: 'Space Mono', monospace;
     font-size: 9px;
     letter-spacing: 0.15em;
-    color: rgba(245,245,245,0.3);
+    color: rgba(245,245,245,0.5);
     margin-top: 12px;
     text-transform: uppercase;
     text-align: center;
@@ -1088,7 +1098,7 @@
     transform: scale(1.15);
     box-shadow: 0 0 0 3px var(--white), var(--shadow-sm);
   }
-  .spray-size-btn, .spray-clear-btn {
+  .spray-size-btn, .spray-clear-btn, .spray-save-btn {
     font-family: 'Space Mono', monospace;
     font-size: 10px;
     letter-spacing: 0.1em;
@@ -1101,16 +1111,17 @@
     cursor: none;
     transition: transform 0.2s, background 0.2s;
   }
-  .spray-size-btn:hover, .spray-clear-btn:hover {
+  .spray-size-btn:hover, .spray-clear-btn:hover, .spray-save-btn:hover {
     transform: translate(-1px,-1px);
     background: rgba(255,255,255,0.15);
   }
   .spray-clear-btn { background: var(--red); color: var(--white); }
+  .spray-save-btn { background: var(--lime); color: var(--black); font-weight: 700; }
   .spray-hint {
     font-family: 'Space Mono', monospace;
     font-size: 10px;
     letter-spacing: 0.12em;
-    color: rgba(245,245,245,0.3);
+    color: rgba(245,245,245,0.5);
     margin-top: 12px;
     text-align: center;
     text-transform: uppercase;
@@ -1229,7 +1240,7 @@
   .footer-copy {
     font-family: 'Space Mono', monospace;
     font-size: 10px;
-    color: rgba(245,245,245,0.3);
+    color: rgba(245,245,245,0.5);
     letter-spacing: 0.1em;
   }
 
@@ -1445,6 +1456,13 @@
     #cursor, #cursor-trail { display: none; }
     html, body { cursor: auto; }
     .btn, .tag, .nav-links a { cursor: pointer; }
+    /* Show all GSAP-hidden elements immediately */
+    .section-title, .about-card, .story-card, .project-card, .rule-item,
+    .hero-title, .hero-sub, .eyebrow, .cta-row, .stats-bar, .tech-stack-wrap {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+    #canvas-wrap { opacity: 0.3; }
   }
 
   /* ── MOBILE ── */
@@ -1538,6 +1556,14 @@
     margin-top: 32px;
     text-align: center;
   }
+  .name-gen-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(245,245,245,0.5);
+    margin-bottom: 12px;
+  }
   #name-input {
     font-family: 'Black Han Sans', sans-serif;
     font-size: clamp(16px, 2vw, 22px);
@@ -1624,7 +1650,7 @@
     font-family: 'Space Mono', monospace;
     font-size: 10px;
     letter-spacing: 0.1em;
-    color: rgba(245,245,245,0.3);
+    color: rgba(245,245,245,0.5);
     text-transform: uppercase;
     pointer-events: none;
     transition: opacity 0.4s;
@@ -1671,7 +1697,7 @@
     font-family: 'Space Mono', monospace;
     font-size: 11px;
     letter-spacing: 0.15em;
-    color: rgba(245,245,245,0.3);
+    color: rgba(245,245,245,0.5);
     text-transform: uppercase;
     margin-top: 16px;
     text-align: center;
@@ -1747,7 +1773,7 @@
 
   <!-- ── SECTION 1: HERO ── -->
   <section class="section" id="hero">
-    <div class="eyebrow">Brian Lapinski &middot; Developer Poser &middot; Portfolio Experiment</div>
+    <div class="eyebrow">Brian Lapinski &middot; Creative Developer &middot; Web &amp; Interactive</div>
     <h1 class="hero-title">BOMB<br>THE WEB</h1>
     <p class="hero-sub">Where Every Pixel Gets Tagged</p>
     <div class="cta-row">
@@ -1759,6 +1785,7 @@
   <!-- ── SECTION 2: ABOUT ── -->
   <section class="section" id="about">
     <h2 class="section-title">The Crew</h2>
+    <p class="about-intro">Developer who builds at the intersection of code and creativity. I make interactive web experiences, 3D visualizations, and tools that feel alive. Currently exploring ML systems, generative art, and anything that pushes the browser to its limits.</p>
     <div class="about-grid">
       <div class="about-card">
         <div class="card-icon">W</div>
@@ -1838,6 +1865,7 @@
       <div class="spray-color-btn" style="background:#0A0A0A" data-color="#0A0A0A" tabindex="0" role="button" aria-label="Black spray color"></div>
       <button class="spray-size-btn" id="spray-size-btn">Size: M</button>
       <button class="spray-clear-btn" id="spray-clear-btn">Clear Wall</button>
+      <button class="spray-save-btn" id="spray-save-btn">Save Tag</button>
     </div>
     <p class="spray-hint">Click & drag to spray &middot; Pick a color &middot; Leave your mark</p>
   </section>
@@ -2042,8 +2070,8 @@
         <div class="project-card-top"></div>
         <div class="project-card-body">
           <div class="project-num">03</div>
-          <h3 class="project-name">Portfolio Site</h3>
-          <p class="project-desc">Personal portfolio built with Nuxt 3 — server-side rendered, performant, and designed with attention to motion and detail.</p>
+          <h3 class="project-name">Art Portfolio</h3>
+          <p class="project-desc">Personal art portfolio built with Nuxt 3 — server-side rendered, performant, and designed with attention to motion and detail.</p>
           <div class="project-tags">
             <span class="project-tech">Nuxt 3</span>
             <span class="project-tech">Vue</span>
@@ -2082,8 +2110,9 @@
     <p class="contact-sub">Open to opportunities &middot; Let's build something wild</p>
     <div id="tag-counter">This wall has been hit <span id="hit-count">0</span> times</div>
     <div id="name-gen">
+      <p class="name-gen-label">Generate your graffiti tag name</p>
       <label for="name-input" class="sr-only">Your graffiti tag name</label>
-      <input type="text" id="name-input" placeholder="Type your tag name..." maxlength="12" autocomplete="off">
+      <input type="text" id="name-input" placeholder="Type your name..." maxlength="12" autocomplete="off">
       <div id="name-output"></div>
     </div>
   </section>
@@ -2098,7 +2127,7 @@
         <li><a href="https://github.com/lapbrian2" target="_blank" rel="noopener noreferrer">GitHub</a></li>
         <li><a href="https://www.linkedin.com/in/brian-lapinski-a65238352" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
       </ul>
-      <div class="footer-copy">Brian Lapinski &middot; Portfolio Experiment &middot; 2025</div>
+      <div class="footer-copy">Brian Lapinski &middot; Creative Developer &middot; 2025</div>
     </div>
   </footer>
 
@@ -2924,6 +2953,14 @@
     document.getElementById('spray-clear-btn').addEventListener('click', () => {
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       resizeCanvas();
+    });
+
+    // Save tag as PNG download
+    document.getElementById('spray-save-btn').addEventListener('click', () => {
+      const link = document.createElement('a');
+      link.download = 'my-tag.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
     });
   })();
 
