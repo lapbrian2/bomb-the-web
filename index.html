@@ -698,6 +698,156 @@
   .tech-badge:nth-child(5) { background: var(--purple); color: var(--white); }
   .tech-badge:nth-child(6) { background: var(--lime); color: var(--black); }
 
+  /* ── CREW RULES SECTION ── */
+  #crew-rules {
+    background: linear-gradient(180deg, rgba(10,10,10,0.9) 0%, var(--black) 50%, rgba(10,10,10,0.95) 100%);
+    padding: 80px 24px 100px;
+  }
+  .rules-list {
+    max-width: 800px;
+    width: 100%;
+    counter-reset: rule;
+  }
+  .rule-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 24px 0;
+    border-bottom: 2px solid rgba(255,255,255,0.05);
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  .rule-num {
+    font-size: clamp(28px, 4vw, 44px);
+    color: var(--pink);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 60px;
+    text-align: right;
+    -webkit-text-stroke: 2px var(--black);
+    filter: drop-shadow(2px 2px 0 var(--black));
+  }
+  .rule-item:nth-child(2) .rule-num { color: var(--cyan); }
+  .rule-item:nth-child(3) .rule-num { color: var(--yellow); }
+  .rule-item:nth-child(4) .rule-num { color: var(--orange); }
+  .rule-item:nth-child(5) .rule-num { color: var(--purple); }
+  .rule-item:nth-child(6) .rule-num { color: var(--lime); }
+  .rule-item:nth-child(7) .rule-num { color: var(--red); }
+  .rule-item:nth-child(8) .rule-num { color: var(--cyan); }
+  .rule-item:nth-child(9) .rule-num { color: var(--pink); }
+  .rule-item:nth-child(10) .rule-num { color: var(--yellow); }
+  .rule-text {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 400;
+    font-size: clamp(14px, 1.6vw, 18px);
+    line-height: 1.6;
+    color: rgba(245,245,245,0.7);
+    letter-spacing: 0.03em;
+  }
+  .rule-text strong {
+    color: var(--white);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── PARTY MODE (Konami code) ── */
+  .party-mode {
+    animation: partyBg 0.5s linear infinite;
+  }
+  @keyframes partyBg {
+    0%   { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+  }
+  .party-toast {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    z-index: 10000;
+    font-size: clamp(36px, 8vw, 80px);
+    color: var(--yellow);
+    -webkit-text-stroke: 3px var(--black);
+    filter: drop-shadow(4px 4px 0 var(--black));
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  /* ── CLICK COUNTER TOAST ── */
+  .click-toast {
+    position: fixed;
+    top: 80px;
+    right: 24px;
+    z-index: 9000;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    border: 2px solid var(--black);
+    box-shadow: var(--shadow-sm);
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+  .click-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── SNITCH MODE ── */
+  .snitch-mode {
+    font-family: 'Arial', 'Helvetica Neue', sans-serif !important;
+  }
+  .snitch-mode .hero-title {
+    font-family: 'Times New Roman', serif !important;
+    -webkit-text-stroke: 0 !important;
+    text-shadow: none !important;
+    color: #333 !important;
+    filter: none !important;
+  }
+  .snitch-mode .section-title {
+    -webkit-text-stroke: 0 !important;
+    filter: none !important;
+    color: #666 !important;
+  }
+  .snitch-mode #canvas-wrap { opacity: 0.05 !important; }
+  .snitch-mode .drip-css { display: none !important; }
+  .snitch-mode #cursor, .snitch-mode #cursor-trail { display: none !important; }
+  .snitch-mode .btn { border-radius: 4px !important; box-shadow: none !important; border: 1px solid #ccc !important; }
+  .snitch-mode .snitch-banner {
+    display: flex !important;
+  }
+  .snitch-banner {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10000;
+    background: #f0f0f0;
+    color: #333;
+    font-family: 'Arial', sans-serif;
+    font-size: 13px;
+    padding: 12px 24px;
+    text-align: center;
+    border-top: 1px solid #ddd;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+  }
+  .snitch-banner button {
+    font-family: 'Arial', sans-serif;
+    font-size: 12px;
+    padding: 4px 12px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
   /* ── CONTACT SECTION ── */
   #contact {
     background: linear-gradient(180deg, rgba(10,10,10,0.9) 0%, var(--black) 100%);
@@ -1048,6 +1198,7 @@
     <li><a href="#about">About</a></li>
     <li><a href="#gallery">Gallery</a></li>
     <li><a href="#stories">Stories</a></li>
+    <li><a href="#crew-rules">Rules</a></li>
     <li><a href="#projects">Projects</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
@@ -1256,7 +1407,54 @@
     </div>
   </section>
 
-  <!-- ── SECTION 5: PROJECTS ── -->
+  <!-- ── SECTION 5: CREW RULES ── -->
+  <section class="section" id="crew-rules">
+    <h2 class="section-title">The Crew Rules</h2>
+    <div class="rules-list">
+      <div class="rule-item">
+        <div class="rule-num">01</div>
+        <div class="rule-text"><strong>Never tag a bathroom stall below eye level.</strong> That's disrespectful to the person sitting there. They're going through enough.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">02</div>
+        <div class="rule-text"><strong>If your tag takes longer than 47 seconds, it's a mural.</strong> Murals require a permit, a manifesto, and at least one argument with your crew about color theory.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">03</div>
+        <div class="rule-text"><strong>Comic Sans is grounds for immediate crew expulsion.</strong> No trial. No appeal. Your cans will be confiscated and given to a kindergarten.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">04</div>
+        <div class="rule-text"><strong>Always carry a decoy sketchbook.</strong> If confronted, open it to a page of flowers. "Officer, I'm a botanical illustrator." Works 60% of the time, every time.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">05</div>
+        <div class="rule-text"><strong>Never go over someone else's piece.</strong> Unless it's in Comic Sans. Then it's community service.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">06</div>
+        <div class="rule-text"><strong>Your tag name cannot be your real name.</strong> We had a guy named "Steve" who tagged "STEVE" everywhere. He got caught immediately. We don't talk about Steve.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">07</div>
+        <div class="rule-text"><strong>If your mom compliments your graffiti, start over.</strong> You've gone too mainstream. Time to reinvent your entire style, identity, and possibly your name.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">08</div>
+        <div class="rule-text"><strong>The cap stays on the can until the lookout says "clear."</strong> We lost three good writers to premature spraying. RIP their sneakers.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">09</div>
+        <div class="rule-text"><strong>A piece isn't finished until you've stepped back and said "yeah."</strong> If you said "hmm" instead, add more drips. Drips fix everything. Drips are the CSS of graffiti.</div>
+      </div>
+      <div class="rule-item">
+        <div class="rule-num">10</div>
+        <div class="rule-text"><strong>This website counts as a piece.</strong> If you're reading this, you've been tagged. Welcome to the crew. Your initiation is opening DevTools and typing the Konami code.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 6: PROJECTS ── -->
   <section class="section" id="projects">
     <h2 class="section-title">Other Work</h2>
     <div class="projects-grid">
@@ -1358,6 +1556,18 @@
   <div class="tag tag-3">Graffiti</div>
   <div class="tag tag-4">Urban</div>
 </div>
+
+<!-- Snitch mode banner (hidden by default) -->
+<div class="snitch-banner" id="snitch-banner">
+  This website has been sanitized for corporate compliance. All creativity has been removed. &nbsp;
+  <button onclick="toggleSnitch()">I Want The Chaos Back</button>
+</div>
+
+<!-- Click counter toast -->
+<div class="click-toast" id="click-toast"></div>
+
+<!-- Party mode toast -->
+<div class="party-toast" id="party-toast">PARTY MODE</div>
 
 <!-- Three.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -2020,6 +2230,210 @@
     renderer.render(scene, camera);
   }
   animate();
+
+  // ── RESIZE ──
+  window.addEventListener('resize', () => {
+    camera.aspect = W() / H();
+    camera.updateProjectionMatrix();
+    renderer.setSize(W(), H());
+    ScrollTrigger.refresh();
+  });
+
+  // ============================================================
+  //  EASTER EGGS & GIMMICKS
+  // ============================================================
+
+  // ── 1. CONSOLE ART ──
+  console.log('%c' + [
+    '  ____   ___  __  __ ____  ',
+    ' | __ ) / _ \\|  \\/  | __ ) ',
+    ' |  _ \\| | | | |\\/| |  _ \\ ',
+    ' | |_) | |_| | |  | | |_) |',
+    ' |____/ \\___/|_|  |_|____/ ',
+    '  _____ _   _ _____        ',
+    ' |_   _| | | | ____|       ',
+    '   | | | |_| |  _|         ',
+    '   | | |  _  | |___        ',
+    '   |_| |_| |_|_____|       ',
+    ' __        _______ ____    ',
+    ' \\ \\      / / ____| __ )   ',
+    '  \\ \\ /\\ / /|  _| |  _ \\  ',
+    '   \\ V  V / | |___| |_) | ',
+    '    \\_/\\_/  |_____|____/   ',
+  ].join('\n'), 'color: #FF1F8E; font-family: monospace; font-size: 10px;');
+  console.log('%c You found the dev tools. You\'re basically crew now.', 'color: #FFD700; font-size: 14px; font-weight: bold;');
+  console.log('%c Pro tip: Type the Konami code on the page for Party Mode.', 'color: #29A8D0; font-size: 11px;');
+  console.log('%c Triple-click the footer brand for... a different experience.', 'color: #8B5BB8; font-size: 11px;');
+  console.log('%c Type "BUFF" on your keyboard for a surprise.', 'color: #7DC820; font-size: 11px;');
+  console.log('%c ⚠️ WARNING: No pixels were harmed in the making of this site. Several were tagged without consent.', 'color: #FF8C00; font-size: 10px;');
+
+  // ── 2. KONAMI CODE → PARTY MODE ──
+  const konamiSequence = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+  let konamiIndex = 0;
+  let partyActive = false;
+
+  window.addEventListener('keydown', e => {
+    if (e.key === konamiSequence[konamiIndex] || e.key.toLowerCase() === konamiSequence[konamiIndex]) {
+      konamiIndex++;
+      if (konamiIndex === konamiSequence.length) {
+        konamiIndex = 0;
+        toggleParty();
+      }
+    } else {
+      konamiIndex = 0;
+    }
+  });
+
+  function toggleParty() {
+    partyActive = !partyActive;
+    const toast = document.getElementById('party-toast');
+    if (partyActive) {
+      document.body.classList.add('party-mode');
+      toast.textContent = 'PARTY MODE ACTIVATED';
+      gsap.fromTo(toast, { scale: 0, rotation: -20 }, { scale: 1, rotation: 5, duration: 0.6, ease: 'back.out(2)' });
+      gsap.to(toast, { scale: 0, rotation: 20, duration: 0.5, delay: 2, ease: 'power2.in' });
+      // Spawn party particles
+      for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+          const dot = document.createElement('div');
+          dot.className = 'spray-dot';
+          dot.style.background = CSS_COLORS[~~(Math.random()*CSS_COLORS.length)];
+          dot.style.left = Math.random() * W() + 'px';
+          dot.style.top = Math.random() * H() + 'px';
+          const sz = (8 + Math.random() * 20) + 'px';
+          dot.style.width = sz; dot.style.height = sz;
+          document.body.appendChild(dot);
+          setTimeout(() => dot.remove(), 1000);
+        }, i * 40);
+      }
+      console.log('%c 🎉 PARTY MODE: ON — You are now officially crew.', 'color: #FF1F8E; font-size: 14px; font-weight: bold;');
+    } else {
+      document.body.classList.remove('party-mode');
+      toast.textContent = 'PARTY MODE OFF';
+      gsap.fromTo(toast, { scale: 0 }, { scale: 1, duration: 0.4, ease: 'power2.out' });
+      gsap.to(toast, { scale: 0, duration: 0.3, delay: 1, ease: 'power2.in' });
+      console.log('%c Party\'s over. Back to vandalizing pixels.', 'color: #29A8D0; font-size: 12px;');
+    }
+  }
+
+  // ── 3. CLICK COUNTER WITH MILESTONES ──
+  let clickCount = 0;
+  const clickMilestones = {
+    10:  { msg: '10 CLICKS — You\'re warming up', bg: '#29A8D0' },
+    25:  { msg: '25 CLICKS — Developing a habit', bg: '#FF1F8E' },
+    50:  { msg: '50 CLICKS — Certified clicker', bg: '#FFD700' },
+    69:  { msg: '69 CLICKS — Nice.', bg: '#8B5BB8' },
+    100: { msg: '100 CLICKS — Touch grass maybe?', bg: '#7DC820' },
+    150: { msg: '150 CLICKS — This site is not a fidget toy', bg: '#FF8C00' },
+    200: { msg: '200 CLICKS — We\'re billing you per click now', bg: '#E8192C' },
+    300: { msg: '300 CLICKS — Your mouse called. It wants a divorce.', bg: '#FF1F8E' },
+    420: { msg: '420 CLICKS — Blaze it (responsibly)', bg: '#7DC820' },
+    500: { msg: '500 CLICKS — Achievement unlocked: CLICK LORD', bg: '#FFD700' },
+    666: { msg: '666 CLICKS — The devil\'s clicker', bg: '#E8192C' },
+    1000:{ msg: '1000 CLICKS — You win. There is no prize.', bg: '#29A8D0' },
+  };
+
+  window.addEventListener('click', () => {
+    clickCount++;
+    const milestone = clickMilestones[clickCount];
+    if (milestone) {
+      const toast = document.getElementById('click-toast');
+      toast.textContent = milestone.msg;
+      toast.style.background = milestone.bg;
+      toast.style.color = ['#FFD700','#7DC820','#FF8C00'].includes(milestone.bg) ? '#0A0A0A' : '#F5F5F5';
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+      console.log('%c ' + milestone.msg, 'color: ' + milestone.bg + '; font-size: 12px; font-weight: bold;');
+    }
+  });
+
+  // ── 4. SNITCH MODE (triple-click footer brand) ──
+  let snitchActive = false;
+  const footerBrand = document.querySelector('.footer-brand');
+  let brandClicks = 0;
+  let brandClickTimer = null;
+
+  footerBrand.addEventListener('click', () => {
+    brandClicks++;
+    clearTimeout(brandClickTimer);
+    brandClickTimer = setTimeout(() => { brandClicks = 0; }, 400);
+    if (brandClicks >= 3) {
+      brandClicks = 0;
+      toggleSnitch();
+    }
+  });
+
+  window.toggleSnitch = function() {
+    snitchActive = !snitchActive;
+    if (snitchActive) {
+      document.body.classList.add('snitch-mode');
+      document.body.style.cursor = 'default';
+      document.title = 'Professional Web Portfolio — Brian Lapinski';
+      console.log('%c 🏢 SNITCH MODE: ON — All creativity has been removed for corporate compliance.', 'color: #666; font-family: Arial; font-size: 12px;');
+      console.log('%c This website now adheres to ISO 9001 visual standards.', 'color: #999; font-family: Arial; font-size: 10px;');
+    } else {
+      document.body.classList.remove('snitch-mode');
+      document.body.style.cursor = '';
+      document.title = 'BOMB THE WEB — Brian Lapinski';
+      console.log('%c 🎨 SNITCH MODE: OFF — The chaos returns. The streets remember.', 'color: #FF1F8E; font-size: 12px; font-weight: bold;');
+    }
+  };
+
+  // ── 5. TYPE "BUFF" → WIPE ANIMATION ──
+  let buffBuffer = '';
+  window.addEventListener('keypress', e => {
+    buffBuffer += e.key.toLowerCase();
+    if (buffBuffer.length > 10) buffBuffer = buffBuffer.slice(-10);
+    if (buffBuffer.endsWith('buff')) {
+      buffBuffer = '';
+      // Flash white wipe across the screen
+      const wipe = document.createElement('div');
+      wipe.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(200,200,200,0.95);display:flex;align-items:center;justify-content:center;pointer-events:none;';
+      wipe.innerHTML = '<div style="font-family:Arial,sans-serif;font-size:clamp(24px,5vw,48px);color:#666;text-align:center;line-height:1.4;">BUFFED<br><span style="font-size:0.4em;letter-spacing:0.3em;opacity:0.5;">YOUR PIECE HAS BEEN REMOVED BY THE CITY</span></div>';
+      document.body.appendChild(wipe);
+      gsap.fromTo(wipe, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power2.out' });
+      gsap.to(wipe, { opacity: 0, duration: 0.8, delay: 2, ease: 'power2.in', onComplete: () => wipe.remove() });
+      console.log('%c 🧹 BUFFED — The city has removed your piece. All that work... gone. Like tears in rain.', 'color: #999; font-size: 12px;');
+    }
+  });
+
+  // ── 6. CREW RULES SCROLL ANIMATION ──
+  gsap.utils.toArray('.rule-item').forEach((rule, i) => {
+    gsap.to(rule, {
+      opacity: 1, x: 0, duration: 0.7, delay: i * 0.08,
+      ease: 'power3.out',
+      scrollTrigger: { trigger: rule, start: 'top 88%', toggleActions: 'play none none reverse' },
+    });
+  });
+
+  // ── 7. RANDOM TITLE GAGS ──
+  const titleGags = [
+    'BOMB THE WEB — Brian Lapinski',
+    'BOMB THE WEB — Now with 47% more drips',
+    'BOMB THE WEB — Hire me before I tag your repo',
+    'BOMB THE WEB — No pixels were harmed',
+    'BOMB THE WEB — This counts as street art',
+    'BOMB THE WEB — Mom said the kerning is off',
+    'BOMB THE WEB — Powered by spray cans & spite',
+    'BOMB THE WEB — Ctrl+Z won\'t save you',
+    'BOMB THE WEB — Graffiti, but make it ✨tech✨',
+    'BOMB THE WEB — Your portfolio could never',
+  ];
+  let titleIdx = 0;
+  setInterval(() => {
+    if (snitchActive || document.hidden) return;
+    titleIdx = (titleIdx + 1) % titleGags.length;
+    document.title = titleGags[titleIdx];
+  }, 15000);
+
+  // ── 8. PAGE VISIBILITY GAG ──
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      document.title = '👀 Come back... the paint is drying';
+    } else {
+      document.title = titleGags[titleIdx];
+    }
+  });
 
   // ── RESIZE ──
   window.addEventListener('resize', () => {
