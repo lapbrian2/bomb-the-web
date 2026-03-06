@@ -581,7 +581,6 @@
   .project-card:nth-child(1) .project-card-top { background: var(--pink); }
   .project-card:nth-child(2) .project-card-top { background: var(--cyan); }
   .project-card:nth-child(3) .project-card-top { background: var(--yellow); }
-  .project-card:nth-child(4) .project-card-top { background: var(--orange); }
   .project-card-body {
     padding: 28px 24px;
   }
@@ -603,7 +602,6 @@
   .project-card:nth-child(1) .project-name { color: var(--pink); }
   .project-card:nth-child(2) .project-name { color: var(--cyan); }
   .project-card:nth-child(3) .project-name { color: var(--yellow); }
-  .project-card:nth-child(4) .project-name { color: var(--orange); }
   .project-desc {
     font-family: 'Oswald', sans-serif;
     font-weight: 400;
@@ -1123,22 +1121,6 @@
     .spray-canvas-wrap { aspect-ratio: 4/3; }
   }
 
-  /* ── IDENTITY BADGE (hero) ── */
-  .hero-identity {
-    font-family: 'Space Mono', monospace;
-    font-size: clamp(11px, 1.3vw, 14px);
-    letter-spacing: 0.2em;
-    color: var(--white);
-    text-transform: uppercase;
-    margin-top: 36px;
-    opacity: 0;
-    padding: 8px 24px;
-    border: 2px solid rgba(245,245,245,0.2);
-    display: inline-block;
-  }
-  .hero-identity span {
-    color: var(--cyan);
-  }
 
   /* ── FOOTER ── */
   #footer {
@@ -1668,6 +1650,7 @@
     <li><a href="#hero">Home</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#spray-zone">Spray</a></li>
     <li><a href="#stories">Stories</a></li>
     <li><a href="#crew-rules">Rules</a></li>
     <li><a href="#projects">Projects</a></li>
@@ -1701,14 +1684,13 @@
 
   <!-- ── SECTION 1: HERO ── -->
   <section class="section" id="hero">
-    <div class="eyebrow">Brian Lapinski &middot; Developer &middot; Portfolio Experiment</div>
+    <div class="eyebrow">Brian Lapinski &middot; Developer Poser &middot; Portfolio Experiment</div>
     <h1 class="hero-title">BOMB<br>THE WEB</h1>
     <p class="hero-sub">Where Every Pixel Gets Tagged</p>
     <div class="cta-row">
       <a class="btn btn-primary" href="#projects" role="button">View Work &darr;</a>
       <a class="btn btn-secondary" href="https://github.com/lapbrian2" target="_blank" rel="noopener noreferrer" role="button">GitHub</a>
     </div>
-    <div class="hero-identity">Built by <span>Brian Lapinski</span> &middot; Full-Stack Playa</div>
   </section>
 
   <!-- ── SECTION 2: ABOUT ── -->
@@ -2013,12 +1995,12 @@
     </div>
   </section>
 
-  <!-- ── SECTION 6: CONTACT ── -->
+  <!-- ── SECTION 7: CONTACT ── -->
   <section class="section" id="contact">
     <h2 class="section-title">Get In Touch</h2>
     <div class="contact-row">
       <a class="contact-btn contact-btn-gh" href="https://github.com/lapbrian2" target="_blank" rel="noopener noreferrer">GitHub</a>
-      <a class="contact-btn contact-btn-li" href="https://linkedin.com/in/brian-lapinski" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <a class="contact-btn contact-btn-li" href="https://www.linkedin.com/in/brian-lapinski-a65238352" target="_blank" rel="noopener noreferrer">LinkedIn</a>
       <a class="contact-btn contact-btn-em" href="mailto:brian@lapinski.dev">Email Me</a>
     </div>
     <p class="contact-sub">Open to opportunities &middot; Let's build something wild</p>
@@ -2037,7 +2019,7 @@
         <li><a href="#hero">Top</a></li>
         <li><a href="#projects">Projects</a></li>
         <li><a href="https://github.com/lapbrian2" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-        <li><a href="https://linkedin.com/in/brian-lapinski" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href="https://www.linkedin.com/in/brian-lapinski-a65238352" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
       </ul>
       <div class="footer-copy">Brian Lapinski &middot; Portfolio Experiment &middot; 2025</div>
     </div>
@@ -2066,7 +2048,7 @@
 </div>
 
 <!-- Snitch mode banner (hidden by default) -->
-<div class="snitch-banner" id="snitch-banner">
+<div class="snitch-banner">
   This website has been sanitized for corporate compliance. All creativity has been removed. &nbsp;
   <button onclick="toggleSnitch()">I Want The Chaos Back</button>
 </div>
@@ -2091,7 +2073,7 @@
     bg:     0x7DC820, yellow: 0xFFD700, pink: 0xFF1F8E,
     orange: 0xFF8C00, blue:   0x1B4FA8, cyan: 0x29A8D0,
     purple: 0x8B5BB8, black:  0x0A0A0A, white: 0xF5F5F5,
-    green:  0x3A7010, red:    0xE8192C,
+    red:    0xE8192C,
   };
   const ACCENTS = [P.yellow, P.pink, P.orange, P.blue, P.cyan, P.purple, P.red];
   const CSS_COLORS = ['#FF1F8E','#FFD700','#29A8D0','#FF8C00','#8B5BB8','#7DC820','#E8192C'];
@@ -2170,6 +2152,7 @@
   const gradMap = new THREE.DataTexture(toonColors, 4, 1, THREE.LuminanceFormat);
   gradMap.minFilter = THREE.NearestFilter;
   gradMap.magFilter = THREE.NearestFilter;
+  gradMap.needsUpdate = true;
 
   // ── MATERIALS ──
   function toonMat(c) { return new THREE.MeshToonMaterial({ color: c, gradientMap: gradMap }); }
@@ -2502,10 +2485,7 @@
       });
     });
 
-    // 7. Hero identity fade in
-    gsap.to('.hero-identity', { opacity: 1, y: 0, duration: 0.7, delay: 2.2, ease: 'power2.out' });
-
-    // 8. Tech stack badges stagger in
+    // 7. Tech stack badges stagger in
     gsap.utils.toArray('.tech-badge').forEach((badge, i) => {
       gsap.to(badge, {
         opacity: 1, y: 0, duration: 0.5, delay: i * 0.08,
@@ -2545,6 +2525,8 @@
       onEnter: () => document.getElementById('nav').classList.add('scrolled'),
       onLeaveBack: () => document.getElementById('nav').classList.remove('scrolled'),
     });
+
+    initGalleryCanvases();
   }
 
   // ── COUNT ANIMATION ──
@@ -2614,7 +2596,7 @@
           const dx = Math.random() * w, dw = 6 + Math.random() * 10;
           const dh = 40 + Math.random() * 120;
           ctx.beginPath();
-          ctx.roundRect(dx, 0, dw, dh, [0, 0, dw/2, dw/2]);
+          if (ctx.roundRect) { ctx.roundRect(dx, 0, dw, dh, [0, 0, dw/2, dw/2]); } else { ctx.rect(dx, 0, dw, dh); }
           ctx.fill();
           ctx.strokeStyle = '#0A0A0A'; ctx.lineWidth = 2; ctx.stroke();
         }
@@ -2644,8 +2626,6 @@
     ctx.stroke();
   }
 
-  setTimeout(initGalleryCanvases, 100);
-
   // ============================================================
   //  MOUSE & CURSOR
   // ============================================================
@@ -2662,6 +2642,8 @@
     mouse.py = e.clientY;
     cursor.style.left = e.clientX + 'px';
     cursor.style.top = e.clientY + 'px';
+    camParallax.x = mouse.y * 0.3;
+    camParallax.y = mouse.x * 0.4;
   });
 
   // Click spray
@@ -2766,8 +2748,14 @@
     cursorTrail.style.left = trailX + 'px';
     cursorTrail.style.top = trailY + 'px';
 
+    // Camera mouse parallax
+    camera.rotation.x += (camParallax.x * 0.02 - camera.rotation.x) * 0.03;
+    camera.rotation.y += (camParallax.y * 0.02 - camera.rotation.y) * 0.03;
+
     renderer.render(scene, camera);
   }
+  // Camera parallax target (updated in mousemove)
+  const camParallax = { x: 0, y: 0 };
   animate();
 
   // ── RESIZE ──
@@ -3112,14 +3100,6 @@
     }
   });
 
-  // ── RESIZE ──
-  window.addEventListener('resize', () => {
-    camera.aspect = W() / H();
-    camera.updateProjectionMatrix();
-    renderer.setSize(W(), H());
-    ScrollTrigger.refresh();
-  });
-
   // ============================================================
   //  BLACKLIGHT / UV MODE
   // ============================================================
@@ -3142,10 +3122,8 @@
   //  STICKER SLAP
   // ============================================================
   const STICKERS = ['💀', '👑', '👁️', '🔥', '⚡', '💣', '🎯', '🖤', '✊', '🎨', '🚀', '💎'];
-  let stickerCount = 0;
   window.addEventListener('dblclick', e => {
     if (e.target.closest('#spray-canvas, .spray-canvas-wrap, input, button, a, .spray-color-btn')) return;
-    stickerCount++;
     const sticker = document.createElement('div');
     sticker.className = 'sticker';
     sticker.textContent = STICKERS[~~(Math.random() * STICKERS.length)];
@@ -3225,8 +3203,11 @@
     sprayWrap.addEventListener('touchstart', () => { if (!hissing) { hissing = true; playHiss(0.3); } });
     sprayWrap.addEventListener('touchend', () => { hissing = false; });
   }
-  // Rattle on page load
-  setTimeout(() => playRattle(), 2000);
+  // Rattle on first user interaction
+  window.addEventListener('pointerdown', function rattleOnce() {
+    playRattle();
+    window.removeEventListener('pointerdown', rattleOnce);
+  });
 
   // ============================================================
   //  GRAFFITI NAME GENERATOR
@@ -3272,8 +3253,10 @@
       gsap.to(drip, { opacity: 0, duration: 2, delay: 3, onComplete: () => drip.remove() });
     }});
   }
-  // Spawn drips periodically
-  setInterval(spawnPhysDrip, 3000 + Math.random() * 2000);
+  // Spawn drips with random intervals
+  (function scheduleDrip() {
+    setTimeout(() => { spawnPhysDrip(); scheduleDrip(); }, 3000 + Math.random() * 2000);
+  })();
   // Initial burst
   setTimeout(() => { for (let i = 0; i < 5; i++) setTimeout(spawnPhysDrip, i * 400); }, 3000);
 
@@ -3311,54 +3294,46 @@
     });
   }
 
-  // ============================================================
-  //  3D SCENE MOUSE PARALLAX (enhanced)
-  // ============================================================
-  // Already have mouse parallax via smoothRot in render loop.
-  // Enhance it: tilt camera slightly with mouse too.
-  const camParallax = { x: 0, y: 0 };
-  window.addEventListener('mousemove', () => {
-    camParallax.x = mouse.y * 0.3;
-    camParallax.y = mouse.x * 0.4;
-  });
-  // Patch into render loop — override the camera idle sway
-  const origAnimate = animate;
-  // We can't easily patch, so we'll use a secondary RAF
-  (function parallaxLoop() {
-    requestAnimationFrame(parallaxLoop);
-    camera.rotation.x += (camParallax.x * 0.02 - camera.rotation.x) * 0.03;
-    camera.rotation.y += (camParallax.y * 0.02 - camera.rotation.y) * 0.03;
-  })();
 
   // ============================================================
   //  SHAKE TO RATTLE (mobile — DeviceMotion API)
   // ============================================================
   if (isMobile) {
     let lastShake = 0;
-    let shakeThreshold = 15;
+    const shakeThreshold = 15;
     let lastAccel = { x: 0, y: 0, z: 0 };
-    window.addEventListener('devicemotion', e => {
-      const a = e.accelerationIncludingGravity;
-      if (!a) return;
-      const delta = Math.abs(a.x - lastAccel.x) + Math.abs(a.y - lastAccel.y) + Math.abs(a.z - lastAccel.z);
-      lastAccel = { x: a.x || 0, y: a.y || 0, z: a.z || 0 };
-      if (delta > shakeThreshold && Date.now() - lastShake > 1000) {
-        lastShake = Date.now();
-        playRattle();
-        // Scatter particles
-        for (let i = 0; i < 20; i++) {
-          const dot = document.createElement('div');
-          dot.className = 'spray-dot';
-          dot.style.background = CSS_COLORS[~~(Math.random()*CSS_COLORS.length)];
-          dot.style.left = Math.random() * W() + 'px';
-          dot.style.top = Math.random() * H() + 'px';
-          const sz = (4 + Math.random() * 12) + 'px';
-          dot.style.width = sz; dot.style.height = sz;
-          document.body.appendChild(dot);
-          setTimeout(() => dot.remove(), 1000);
+    function bindShakeListener() {
+      window.addEventListener('devicemotion', e => {
+        const a = e.accelerationIncludingGravity;
+        if (!a) return;
+        const delta = Math.abs(a.x - lastAccel.x) + Math.abs(a.y - lastAccel.y) + Math.abs(a.z - lastAccel.z);
+        lastAccel = { x: a.x || 0, y: a.y || 0, z: a.z || 0 };
+        if (delta > shakeThreshold && Date.now() - lastShake > 1000) {
+          lastShake = Date.now();
+          playRattle();
+          for (let i = 0; i < 20; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'spray-dot';
+            dot.style.background = CSS_COLORS[~~(Math.random()*CSS_COLORS.length)];
+            dot.style.left = Math.random() * W() + 'px';
+            dot.style.top = Math.random() * H() + 'px';
+            const sz = (4 + Math.random() * 12) + 'px';
+            dot.style.width = sz; dot.style.height = sz;
+            document.body.appendChild(dot);
+            setTimeout(() => dot.remove(), 1000);
+          }
         }
-      }
-    });
+      });
+    }
+    if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+      // iOS 13+ requires user gesture to request permission
+      window.addEventListener('touchstart', function reqMotion() {
+        DeviceMotionEvent.requestPermission().then(state => { if (state === 'granted') bindShakeListener(); });
+        window.removeEventListener('touchstart', reqMotion);
+      });
+    } else {
+      bindShakeListener();
+    }
   }
 
   // ============================================================
