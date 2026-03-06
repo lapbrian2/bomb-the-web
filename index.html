@@ -1426,6 +1426,217 @@
     .about-card { padding: 24px 20px; }
     .gal-item { width: 180px; }
   }
+
+  /* ── BLACKLIGHT MODE ── */
+  .blacklight-mode {
+    --black: #1a0033;
+  }
+  .blacklight-mode body, .blacklight-mode #scroll-container {
+    background: #0d001a !important;
+  }
+  .blacklight-mode .hero-title, .blacklight-mode .section-title {
+    text-shadow: 0 0 20px var(--pink), 0 0 40px var(--cyan), 0 0 80px var(--purple) !important;
+    -webkit-text-stroke-color: rgba(255,255,255,0.15) !important;
+  }
+  .blacklight-mode .about-card, .blacklight-mode .story-card, .blacklight-mode .project-card {
+    box-shadow: 0 0 15px rgba(139,91,184,0.4), var(--shadow-lg) !important;
+    border-color: rgba(139,91,184,0.5) !important;
+  }
+  .blacklight-mode .btn, .blacklight-mode .contact-btn, .blacklight-mode .tag, .blacklight-mode .tech-badge {
+    box-shadow: 0 0 10px currentColor, var(--shadow-sm) !important;
+  }
+  .blacklight-mode .drip-css { filter: brightness(1.8) drop-shadow(0 0 6px currentColor); }
+  .blacklight-mode .stats-bar { box-shadow: 0 0 20px rgba(255,31,142,0.3) !important; }
+  .blacklight-mode .stat { box-shadow: inset 0 0 20px rgba(0,0,0,0.3); }
+  .blacklight-mode #nav.scrolled { background: rgba(13,0,26,0.95) !important; }
+  .blacklight-mode #footer { background: #0d001a !important; border-top-color: var(--purple) !important; }
+  #blacklight-toggle {
+    position: fixed;
+    top: 80px;
+    right: 24px;
+    z-index: 200;
+    width: 44px; height: 44px;
+    background: var(--purple);
+    border: 3px solid var(--black);
+    box-shadow: var(--shadow-md);
+    color: var(--white);
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s, background 0.2s;
+    user-select: none;
+    font-family: 'Black Han Sans', sans-serif;
+  }
+  #blacklight-toggle:hover {
+    transform: translate(-2px,-2px) rotate(-5deg);
+    box-shadow: 6px 6px 0 var(--black);
+    background: var(--cyan);
+  }
+  .blacklight-mode #blacklight-toggle { background: var(--yellow); color: var(--black); box-shadow: 0 0 15px rgba(255,215,0,0.5); }
+
+  /* ── STICKER SLAP ── */
+  .sticker {
+    position: fixed;
+    font-size: clamp(24px, 4vw, 48px);
+    pointer-events: none;
+    z-index: 90;
+    filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.5));
+    user-select: none;
+  }
+
+  /* ── GRAFFITI NAME GENERATOR ── */
+  #name-gen {
+    max-width: 600px;
+    width: 100%;
+    margin-top: 32px;
+    text-align: center;
+  }
+  #name-input {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: clamp(16px, 2vw, 22px);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.06);
+    border: 3px solid var(--black);
+    box-shadow: var(--shadow-md);
+    color: var(--yellow);
+    padding: 14px 24px;
+    width: 100%;
+    outline: none;
+    text-align: center;
+    cursor: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  #name-input::placeholder { color: rgba(245,245,245,0.25); text-transform: uppercase; }
+  #name-input:focus { border-color: var(--pink); box-shadow: 0 0 12px rgba(255,31,142,0.3), var(--shadow-md); }
+  #name-output {
+    margin-top: 20px;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .graff-letter {
+    font-size: clamp(36px, 7vw, 72px);
+    font-family: 'Black Han Sans', sans-serif;
+    display: inline-block;
+    -webkit-text-stroke: 3px var(--black);
+    paint-order: stroke fill;
+    filter: drop-shadow(3px 3px 0 var(--black));
+    transition: transform 0.2s;
+    line-height: 1;
+  }
+  .graff-letter:hover { transform: scale(1.2) rotate(-8deg); }
+
+  /* ── PHYSICS PAINT DRIPS ── */
+  .phys-drip {
+    position: fixed;
+    width: 4px;
+    border-radius: 0 0 4px 4px;
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0.8;
+  }
+
+  /* ── GLITCH / VHS TRANSITION ── */
+  .glitch-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9500;
+    pointer-events: none;
+    opacity: 0;
+    mix-blend-mode: screen;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(255,255,255,0.03) 2px,
+      rgba(255,255,255,0.03) 4px
+    );
+  }
+  .glitch-overlay.flash {
+    animation: glitchFlash 0.3s steps(4) forwards;
+  }
+  @keyframes glitchFlash {
+    0%   { opacity: 0; }
+    20%  { opacity: 1; transform: translateX(-5px); }
+    40%  { opacity: 0.5; transform: translateX(3px) skewX(-2deg); }
+    60%  { opacity: 1; transform: translateX(-2px) skewX(1deg); }
+    80%  { opacity: 0.3; transform: translateX(4px); }
+    100% { opacity: 0; transform: none; }
+  }
+
+  /* ── SPEED RUN TIMER ── */
+  #speed-timer {
+    position: fixed;
+    bottom: 80px;
+    left: 24px;
+    z-index: 200;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: rgba(245,245,245,0.3);
+    text-transform: uppercase;
+    pointer-events: none;
+    transition: opacity 0.4s;
+  }
+  #speed-result {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%) scale(0);
+    z-index: 10000;
+    background: var(--black);
+    border: 4px solid var(--yellow);
+    box-shadow: 0 0 30px rgba(255,215,0,0.3), var(--shadow-lg);
+    padding: 32px 48px;
+    text-align: center;
+    pointer-events: none;
+    max-width: 90vw;
+  }
+  .speed-time {
+    font-size: clamp(36px, 6vw, 60px);
+    color: var(--yellow);
+    -webkit-text-stroke: 2px var(--black);
+    filter: drop-shadow(3px 3px 0 var(--black));
+  }
+  .speed-msg {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 400;
+    font-size: clamp(13px, 1.4vw, 16px);
+    color: rgba(245,245,245,0.6);
+    margin-top: 10px;
+    letter-spacing: 0.06em;
+  }
+  .speed-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: rgba(245,245,245,0.25);
+    margin-top: 12px;
+    text-transform: uppercase;
+  }
+
+  /* ── VISITOR TAG COUNTER ── */
+  #tag-counter {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: rgba(245,245,245,0.3);
+    text-transform: uppercase;
+    margin-top: 16px;
+    text-align: center;
+  }
+  #tag-counter span { color: var(--yellow); }
+
+  @media (max-width: 768px) {
+    #blacklight-toggle { width: 38px; height: 38px; font-size: 15px; top: 70px; right: 16px; }
+    #speed-timer { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -1464,6 +1675,20 @@
   </ul>
 </nav>
 
+<!-- Blacklight toggle -->
+<div id="blacklight-toggle" onclick="toggleBlacklight()" title="Blacklight Mode">UV</div>
+
+<!-- Glitch overlay -->
+<div class="glitch-overlay" id="glitch-overlay"></div>
+
+<!-- Speed run timer -->
+<div id="speed-timer"></div>
+<div id="speed-result">
+  <div class="speed-time" id="speed-time-val"></div>
+  <div class="speed-msg" id="speed-msg"></div>
+  <div class="speed-label">SPEED RUN COMPLETE</div>
+</div>
+
 <!-- Custom cursor -->
 <div id="cursor" aria-hidden="true"></div>
 <div id="cursor-trail" aria-hidden="true"></div>
@@ -1483,7 +1708,7 @@
       <a class="btn btn-primary" href="#projects" role="button">View Work &darr;</a>
       <a class="btn btn-secondary" href="https://github.com/lapbrian2" target="_blank" rel="noopener noreferrer" role="button">GitHub</a>
     </div>
-    <div class="hero-identity">Built by <span>Brian Lapinski</span> &middot; Full-Stack Developer</div>
+    <div class="hero-identity">Built by <span>Brian Lapinski</span> &middot; Full-Stack Playa</div>
   </section>
 
   <!-- ── SECTION 2: ABOUT ── -->
@@ -1797,6 +2022,11 @@
       <a class="contact-btn contact-btn-em" href="mailto:brian@lapinski.dev">Email Me</a>
     </div>
     <p class="contact-sub">Open to opportunities &middot; Let's build something wild</p>
+    <div id="tag-counter">This wall has been hit <span id="hit-count">0</span> times</div>
+    <div id="name-gen">
+      <input type="text" id="name-input" placeholder="Type your tag name..." maxlength="12" autocomplete="off">
+      <div id="name-output"></div>
+    </div>
   </section>
 
   <!-- ── FOOTER ── -->
@@ -2889,6 +3119,297 @@
     renderer.setSize(W(), H());
     ScrollTrigger.refresh();
   });
+
+  // ============================================================
+  //  BLACKLIGHT / UV MODE
+  // ============================================================
+  let blacklightActive = false;
+  window.toggleBlacklight = function() {
+    blacklightActive = !blacklightActive;
+    document.documentElement.classList.toggle('blacklight-mode', blacklightActive);
+    if (blacklightActive) {
+      scene.background.set(0x0d001a);
+      scene.fog.color.set(0x0d001a);
+      console.log('%c UV MODE: ON — Everything glows now.', 'color: #8B5BB8; font-size: 12px; font-weight: bold;');
+    } else {
+      scene.background.set(P.bg);
+      scene.fog.color.set(P.bg);
+      console.log('%c UV MODE: OFF — Back to daylight.', 'color: #7DC820; font-size: 12px;');
+    }
+  };
+
+  // ============================================================
+  //  STICKER SLAP
+  // ============================================================
+  const STICKERS = ['💀', '👑', '👁️', '🔥', '⚡', '💣', '🎯', '🖤', '✊', '🎨', '🚀', '💎'];
+  let stickerCount = 0;
+  window.addEventListener('dblclick', e => {
+    if (e.target.closest('#spray-canvas, .spray-canvas-wrap, input, button, a, .spray-color-btn')) return;
+    stickerCount++;
+    const sticker = document.createElement('div');
+    sticker.className = 'sticker';
+    sticker.textContent = STICKERS[~~(Math.random() * STICKERS.length)];
+    sticker.style.left = e.clientX + 'px';
+    sticker.style.top = e.clientY + 'px';
+    const rot = (Math.random() - 0.5) * 40;
+    const scale = 0.8 + Math.random() * 0.6;
+    gsap.fromTo(sticker,
+      { scale: 0, rotation: rot - 20 },
+      { scale: scale, rotation: rot, duration: 0.4, ease: 'back.out(3)' }
+    );
+    document.body.appendChild(sticker);
+    // Fade out after 8 seconds
+    gsap.to(sticker, { opacity: 0, duration: 0.5, delay: 8, onComplete: () => sticker.remove() });
+  });
+
+  // ============================================================
+  //  SPRAY CAN SOUND FX (Web Audio API — no files)
+  // ============================================================
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  let audioCtx = null;
+  function ensureAudio() {
+    if (!audioCtx) audioCtx = new AudioCtx();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+
+  function playHiss(duration) {
+    try {
+      const ctx = ensureAudio();
+      const bufferSize = ctx.sampleRate * duration;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * 0.08;
+      }
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      const bandpass = ctx.createBiquadFilter();
+      bandpass.type = 'bandpass';
+      bandpass.frequency.value = 6000 + Math.random() * 4000;
+      bandpass.Q.value = 0.5;
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.12, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+      source.connect(bandpass).connect(gain).connect(ctx.destination);
+      source.start();
+      source.stop(ctx.currentTime + duration);
+    } catch(e) {}
+  }
+
+  function playRattle() {
+    try {
+      const ctx = ensureAudio();
+      for (let i = 0; i < 6; i++) {
+        setTimeout(() => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.value = 800 + Math.random() * 2000;
+          gain.gain.setValueAtTime(0.06, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+          osc.connect(gain).connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.05);
+        }, i * 35 + Math.random() * 20);
+      }
+    } catch(e) {}
+  }
+
+  // Hiss on spray canvas interaction
+  const sprayWrap = document.querySelector('.spray-canvas-wrap');
+  if (sprayWrap) {
+    let hissing = false;
+    sprayWrap.addEventListener('mousedown', () => { if (!hissing) { hissing = true; playHiss(0.3); } });
+    sprayWrap.addEventListener('mouseup', () => { hissing = false; });
+    sprayWrap.addEventListener('touchstart', () => { if (!hissing) { hissing = true; playHiss(0.3); } });
+    sprayWrap.addEventListener('touchend', () => { hissing = false; });
+  }
+  // Rattle on page load
+  setTimeout(() => playRattle(), 2000);
+
+  // ============================================================
+  //  GRAFFITI NAME GENERATOR
+  // ============================================================
+  const nameInput = document.getElementById('name-input');
+  const nameOutput = document.getElementById('name-output');
+  const GRAFF_COLORS = ['#FF1F8E','#FFD700','#29A8D0','#FF8C00','#8B5BB8','#7DC820','#E8192C','#1B4FA8'];
+
+  if (nameInput && nameOutput) {
+    nameInput.addEventListener('input', () => {
+      const val = nameInput.value.toUpperCase();
+      nameOutput.innerHTML = '';
+      for (let i = 0; i < val.length; i++) {
+        const span = document.createElement('span');
+        span.className = 'graff-letter';
+        span.textContent = val[i] === ' ' ? '\u00A0' : val[i];
+        span.style.color = GRAFF_COLORS[i % GRAFF_COLORS.length];
+        const rot = (Math.random() - 0.5) * 16;
+        const yOff = (Math.random() - 0.5) * 8;
+        span.style.transform = 'rotate(' + rot + 'deg) translateY(' + yOff + 'px)';
+        nameOutput.appendChild(span);
+        gsap.fromTo(span, { scale: 0, rotation: rot - 20 }, { scale: 1, rotation: rot, duration: 0.3, delay: i * 0.04, ease: 'back.out(2)' });
+      }
+    });
+  }
+
+  // ============================================================
+  //  PHYSICS PAINT DRIPS (from top of viewport)
+  // ============================================================
+  function spawnPhysDrip() {
+    if (isMobile) return;
+    const drip = document.createElement('div');
+    drip.className = 'phys-drip';
+    drip.style.left = (Math.random() * window.innerWidth) + 'px';
+    drip.style.top = '0px';
+    drip.style.background = CSS_COLORS[~~(Math.random() * CSS_COLORS.length)];
+    const width = 2 + Math.random() * 5;
+    drip.style.width = width + 'px';
+    document.body.appendChild(drip);
+    const maxH = 60 + Math.random() * 200;
+    const speed = 0.5 + Math.random() * 1.5;
+    gsap.to(drip, { height: maxH, duration: speed, ease: 'power1.in', onComplete: () => {
+      gsap.to(drip, { opacity: 0, duration: 2, delay: 3, onComplete: () => drip.remove() });
+    }});
+  }
+  // Spawn drips periodically
+  setInterval(spawnPhysDrip, 3000 + Math.random() * 2000);
+  // Initial burst
+  setTimeout(() => { for (let i = 0; i < 5; i++) setTimeout(spawnPhysDrip, i * 400); }, 3000);
+
+  // ============================================================
+  //  VISITOR TAG COUNTER (localStorage)
+  // ============================================================
+  (function initTagCounter() {
+    const countEl = document.getElementById('hit-count');
+    if (!countEl) return;
+    let count = parseInt(localStorage.getItem('btw-hits') || '0', 10);
+    count++;
+    localStorage.setItem('btw-hits', count.toString());
+    // Animate count up
+    gsap.to({ val: 0 }, {
+      val: count, duration: 1.5, delay: 2, ease: 'power2.out',
+      onUpdate: function() { countEl.textContent = Math.round(this.targets()[0].val).toLocaleString(); },
+    });
+  })();
+
+  // ============================================================
+  //  GLITCH / VHS SECTION TRANSITIONS
+  // ============================================================
+  const glitchEl = document.getElementById('glitch-overlay');
+  if (glitchEl) {
+    document.querySelectorAll('.section').forEach(section => {
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top 90%',
+        onEnter: () => {
+          glitchEl.classList.add('flash');
+          setTimeout(() => glitchEl.classList.remove('flash'), 300);
+        },
+        once: false,
+      });
+    });
+  }
+
+  // ============================================================
+  //  3D SCENE MOUSE PARALLAX (enhanced)
+  // ============================================================
+  // Already have mouse parallax via smoothRot in render loop.
+  // Enhance it: tilt camera slightly with mouse too.
+  const camParallax = { x: 0, y: 0 };
+  window.addEventListener('mousemove', () => {
+    camParallax.x = mouse.y * 0.3;
+    camParallax.y = mouse.x * 0.4;
+  });
+  // Patch into render loop — override the camera idle sway
+  const origAnimate = animate;
+  // We can't easily patch, so we'll use a secondary RAF
+  (function parallaxLoop() {
+    requestAnimationFrame(parallaxLoop);
+    camera.rotation.x += (camParallax.x * 0.02 - camera.rotation.x) * 0.03;
+    camera.rotation.y += (camParallax.y * 0.02 - camera.rotation.y) * 0.03;
+  })();
+
+  // ============================================================
+  //  SHAKE TO RATTLE (mobile — DeviceMotion API)
+  // ============================================================
+  if (isMobile) {
+    let lastShake = 0;
+    let shakeThreshold = 15;
+    let lastAccel = { x: 0, y: 0, z: 0 };
+    window.addEventListener('devicemotion', e => {
+      const a = e.accelerationIncludingGravity;
+      if (!a) return;
+      const delta = Math.abs(a.x - lastAccel.x) + Math.abs(a.y - lastAccel.y) + Math.abs(a.z - lastAccel.z);
+      lastAccel = { x: a.x || 0, y: a.y || 0, z: a.z || 0 };
+      if (delta > shakeThreshold && Date.now() - lastShake > 1000) {
+        lastShake = Date.now();
+        playRattle();
+        // Scatter particles
+        for (let i = 0; i < 20; i++) {
+          const dot = document.createElement('div');
+          dot.className = 'spray-dot';
+          dot.style.background = CSS_COLORS[~~(Math.random()*CSS_COLORS.length)];
+          dot.style.left = Math.random() * W() + 'px';
+          dot.style.top = Math.random() * H() + 'px';
+          const sz = (4 + Math.random() * 12) + 'px';
+          dot.style.width = sz; dot.style.height = sz;
+          document.body.appendChild(dot);
+          setTimeout(() => dot.remove(), 1000);
+        }
+      }
+    });
+  }
+
+  // ============================================================
+  //  SPEED RUN TIMER
+  // ============================================================
+  (function initSpeedTimer() {
+    const timerEl = document.getElementById('speed-timer');
+    const resultEl = document.getElementById('speed-result');
+    const timeVal = document.getElementById('speed-time-val');
+    const speedMsg = document.getElementById('speed-msg');
+    if (!timerEl || !resultEl) return;
+
+    const startTime = Date.now();
+    let completed = false;
+
+    // Update timer display
+    const timerInterval = setInterval(() => {
+      if (completed) return;
+      const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+      timerEl.textContent = elapsed + 's';
+    }, 100);
+
+    // Detect reaching footer
+    ScrollTrigger.create({
+      trigger: '#footer',
+      start: 'top 80%',
+      onEnter: () => {
+        if (completed) return;
+        completed = true;
+        clearInterval(timerInterval);
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+        timerEl.style.opacity = '0';
+
+        // Pick a roast based on time
+        let msg = '';
+        const secs = parseFloat(elapsed);
+        if (secs < 5) msg = 'Speedrunner detected. You saw nothing.';
+        else if (secs < 15) msg = 'You spent ' + elapsed + 's on my portfolio. Impressive attention span.';
+        else if (secs < 30) msg = 'A casual scroll. You probably read 3 words.';
+        else if (secs < 60) msg = 'A solid minute. You actually looked at stuff.';
+        else if (secs < 120) msg = 'Two minutes? You might actually hire me.';
+        else if (secs < 300) msg = 'You\'ve been here ' + elapsed + 's. That\'s longer than most first dates.';
+        else msg = 'You\'ve been here over 5 minutes. Are you okay? Blink twice if you need help.';
+
+        timeVal.textContent = elapsed + 's';
+        speedMsg.textContent = msg;
+        gsap.fromTo(resultEl, { scale: 0, rotation: -5 }, { scale: 1, rotation: 0, duration: 0.6, ease: 'back.out(2)' });
+        gsap.to(resultEl, { scale: 0, duration: 0.4, delay: 5, ease: 'power2.in' });
+      },
+    });
+  })();
 })();
 </script>
 </body>
