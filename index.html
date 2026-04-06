@@ -1416,6 +1416,22 @@
     outline-offset: 2px;
   }
 
+  /* ── SCROLL STATE QUERY: Nav (NOT APPLIED) ──
+     CSS scroll-state(stuck: top) requires position: sticky, but this
+     nav is position: fixed (an overlay above the scroll container).
+     Converting to sticky would require restructuring the HTML — the
+     nav would need to be INSIDE #scroll-container and take up flow
+     space. This would change layout behavior, violating the "do not
+     change visual appearance" rule.
+     The JS ScrollTrigger approach (.scrolled class, line ~2880) is
+     the correct pattern for a fixed-position overlay nav.
+     To adopt scroll-state queries in the future:
+       1. Move <nav> inside #scroll-container as its first child
+       2. Change position: fixed → position: sticky; top: 0
+       3. Add container-type: scroll-state to the nav
+       4. Use @container scroll-state(stuck: top) { ... }
+     ============================================ */
+
   /* ── CURSOR: Spray Can Nozzle ── */
   #cursor {
     position: fixed;
@@ -1506,6 +1522,91 @@
   @keyframes dripDown {
     0%,100% { transform: scaleY(1); }
     50%     { transform: scaleY(1.5); }
+  }
+
+  /* ── CSS animation-trigger: NOT APPLIED ──
+     Assessed all GSAP ScrollTrigger animations for CSS conversion.
+     - about-cards, section-titles, stats, tech-badges, project-cards,
+       contact-btns: all use toggleActions 'play none none reverse'
+       (reversible), so they can't be fire-once CSS triggers.
+     - story-cards, rule-items: fire-once ('play none none none') but
+       each has onStart spray-burst callbacks, per-item custom easing,
+       and multi-property transforms. Too complex for CSS.
+     - gallery: scrub + pin. Must stay GSAP.
+     No candidates met the "simplest entrance" threshold.
+     When new simple fire-once animations are added, use:
+       animation-trigger: --trigger-name;
+       @trigger --trigger-name { ... }
+     ============================================ */
+
+  /* ── SIBLING-INDEX PROGRESSIVE ENHANCEMENT ──
+     Where supported, replace nth-child visual staggers with continuous
+     sibling-index()/sibling-count() math. The nth-child fallbacks above
+     remain for browsers without support.
+     ============================================ */
+  @supports (animation-delay: calc(sibling-index() * 1s)) {
+    /* Drip stagger: continuous delay based on position */
+    .drip-css {
+      animation-delay: calc(sibling-index() * 0.22s);
+    }
+
+    /* Story card initial transforms: fan-spread from center
+       Odd indices slide left, even slide right, rotation fans out */
+    .story-card {
+      --si: sibling-index();
+      --sc: sibling-count();
+      --center-offset: calc(var(--si) - var(--sc) / 2);
+      --direction: calc(1 - 2 * mod(var(--si), 2)); /* 1 or -1 */
+      transform:
+        translateX(calc(var(--direction) * -100px))
+        translateY(30px)
+        rotate(calc(var(--center-offset) * 1.5deg))
+        scale(0.92);
+    }
+
+    /* Story card hover: direction based on index parity */
+    .story-card:hover {
+      transform:
+        translateX(calc(var(--direction) * 6px))
+        translateY(-4px)
+        rotate(calc(var(--direction) * -1.5deg)) !important;
+    }
+
+    /* Rule item initial transforms: alternating slide-in with fan-spread rotation */
+    .rule-item {
+      --si: sibling-index();
+      --sc: sibling-count();
+      --direction: calc(1 - 2 * mod(var(--si), 2));
+      --center-offset: calc(var(--si) - var(--sc) / 2);
+      transform:
+        translateX(calc(var(--direction) * -120px))
+        rotate(calc(var(--center-offset) * 1.2deg))
+        scale(0.9);
+    }
+
+    /* Rule item hover: alternating direction */
+    .rule-item:hover {
+      transform:
+        translateX(calc(var(--direction) * 10px))
+        rotate(calc(var(--direction) * -0.5deg)) !important;
+    }
+
+    /* Rule item tape marks: alternate corners based on parity */
+    .rule-item::before {
+      top: -4px;
+      right: calc(mod(var(--si), 2) * -1 * 20px + (1 - mod(var(--si), 2)) * 20px);
+      left: calc(mod(var(--si), 2) * 20px);
+      transform: rotate(calc(var(--direction) * -12deg));
+    }
+
+    /* Background variation: cycle every 3 using mod */
+    .story-card {
+      --mod3: mod(var(--si), 3);
+    }
+
+    .rule-item {
+      --mod3: mod(var(--si), 3);
+    }
   }
 
   /* ── REDUCED MOTION ── */
@@ -2959,6 +3060,54 @@
     renderer.setSize(W(), H());
     ScrollTrigger.refresh();
   });
+
+  // ── WEBGL CLEANUP (Task 4) ──
+  // Dispose all Three.js resources and kill GSAP instances on page
+  // unload to prevent memory buildup during long sessions.
+  function cleanupWebGL() {
+    // Kill all GSAP ScrollTrigger instances
+    ScrollTrigger.getAll().forEach(function(t) { t.kill(); });
+    // Kill all active GSAP tweens
+    gsap.killTweensOf('*');
+
+    // Traverse scene and dispose all geometries, materials, textures
+    scene.traverse(function(obj) {
+      if (obj.isMesh || obj.isPoints || obj.isLine) {
+        if (obj.geometry) obj.geometry.dispose();
+        var mat = obj.material;
+        if (mat) {
+          // Handle material arrays (multi-material objects)
+          var mats = Array.isArray(mat) ? mat : [mat];
+          mats.forEach(function(m) {
+            // Dispose all texture properties
+            for (var key in m) {
+              if (m.hasOwnProperty(key)) {
+                var val = m[key];
+                if (val && val.isTexture) val.dispose();
+              }
+            }
+            m.dispose();
+          });
+        }
+      }
+    });
+
+    // Dispose the gradient map texture explicitly
+    if (gradMap) gradMap.dispose();
+
+    // Dispose particles geometry
+    if (pGeo) pGeo.dispose();
+
+    // Dispose the renderer and remove canvas
+    renderer.dispose();
+    if (renderer.domElement && renderer.domElement.parentNode) {
+      renderer.domElement.parentNode.removeChild(renderer.domElement);
+    }
+  }
+
+  // Wire cleanup to pagehide (preferred) with beforeunload fallback
+  window.addEventListener('pagehide', cleanupWebGL);
+  window.addEventListener('beforeunload', cleanupWebGL);
 
   // ============================================================
   //  INTERACTIVE SPRAY CANVAS
